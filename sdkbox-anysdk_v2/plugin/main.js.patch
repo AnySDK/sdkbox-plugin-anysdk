@@ -1,0 +1,23 @@
+--- main.cpp	2014-07-10 21:06:56.000000000 +0800
++++ main.cpp	2015-09-09 16:30:32.000000000 +0800
+@@ -4,6 +4,9 @@
+ #include "CCEventType.h"
+ #include <jni.h>
+ #include <android/log.h>
++#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) && (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
++#include "PluginJniHelper.h"
++#endif
+ 
+ #define  LOG_TAG    "main"
+ #define  LOGD(...)  __android_log_print(ANDROID_LOG_DEBUG,LOG_TAG,__VA_ARGS__)
+@@ -16,7 +19,9 @@
+ jint JNI_OnLoad(JavaVM *vm, void *reserved)
+ {
+     JniHelper::setJavaVM(vm);
+-
++#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) && (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
++    anysdk::framework::PluginJniHelper::setJavaVM(vm);
++#endif
+     return JNI_VERSION_1_4;
+ }
+ 

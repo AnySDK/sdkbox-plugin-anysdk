@@ -1,0 +1,30 @@
+--- main.cpp	2014-10-22 16:34:46.000000000 +0800
++++ main.cpp	2015-09-10 11:34:00.000000000 +0800
+@@ -3,12 +3,27 @@
+ #include "platform/android/jni/JniHelper.h"
+ #include <jni.h>
+ #include <android/log.h>
++#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) && (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
++#include "PluginJniHelper.h"
++#endif
+ 
+ #define  LOG_TAG    "main"
+ #define  LOGD(...)  __android_log_print(ANDROID_LOG_DEBUG,LOG_TAG,__VA_ARGS__)
+ 
+ using namespace cocos2d;
+ 
++extern "C"
++{
++	jint JNI_OnLoad(JavaVM *vm, void *reserved)
++	{
++    	JniHelper::setJavaVM(vm);
++#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) && (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
++    	anysdk::framework::PluginJniHelper::setJavaVM(vm);
++#endif
++    	return JNI_VERSION_1_4;
++	}
++}
++
+ void cocos_android_app_init (JNIEnv* env, jobject thiz) {
+     LOGD("cocos_android_app_init");
+     AppDelegate *pAppDelegate = new AppDelegate();

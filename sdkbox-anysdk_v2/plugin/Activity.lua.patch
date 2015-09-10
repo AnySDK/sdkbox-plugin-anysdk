@@ -1,0 +1,70 @@
+--- lua.java	2015-09-09 16:23:41.000000000 +0800
++++ lua.java	2015-09-09 16:21:43.000000000 +0800
+@@ -25,13 +25,18 @@
+ import org.cocos2dx.lib.Cocos2dxActivity;
+ import org.cocos2dx.lib.Cocos2dxGLSurfaceView;
+ 
++import com.anysdk.framework.PluginWrapper;
++
+ import android.content.Context;
++import android.content.Intent;
+ import android.os.Bundle;
+ import android.view.KeyEvent;
+ 
+ public class lua extends Cocos2dxActivity{
+ 	protected void onCreate(Bundle savedInstanceState){
+ 		super.onCreate(savedInstanceState);
++		PluginWrapper.init(this);
++		PluginWrapper.setGLSurfaceView(onCreateGLSurfaceView());
+ 	}
+ 	
+ 	public Cocos2dxGLSurfaceView onCreateGLSurfaceView() {
+@@ -41,6 +46,48 @@
+     static {
+         System.loadLibrary("cocos2dlua");
+     }
++
++	@Override
++	protected void onResume() {
++		super.onResume();
++		PluginWrapper.onResume();
++	}
++
++	@Override
++	protected void onPause() {
++		super.onPause();
++		PluginWrapper.onPause();
++	}
++
++	@Override
++	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
++		super.onActivityResult(requestCode, resultCode, data);
++		PluginWrapper.onActivityResult(requestCode, resultCode, data);
++	}
++
++	@Override
++	protected void onDestroy() {
++		super.onDestroy();
++		PluginWrapper.onDestroy();
++	}
++
++	@Override
++	protected void onNewIntent(Intent intent) {
++		super.onNewIntent(intent);
++		PluginWrapper.onNewIntent(intent);
++	}
++
++	@Override
++	protected void onRestart() {
++		super.onRestart();
++		PluginWrapper.onRestart();
++	}
++
++	@Override
++	protected void onStop() {
++		super.onStop();
++		PluginWrapper.onStop();
++	}     
+ }
+ 
+ class LuaGLSurfaceView extends Cocos2dxGLSurfaceView{

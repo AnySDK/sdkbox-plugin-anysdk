@@ -1,0 +1,72 @@
+#Android
+if sdkbox.android_has_key_value(sdkbox.APPLICATION, 'APP_STL', 'c++_static'):
+    sdkbox.copy_files('android/protocols_c++_static', PLUGIN_PATH, ANDROID_PROJECT_DIR,{'protocols_c++_static':'protocols'})
+
+if sdkbox.android_has_key_value(sdkbox.APPLICATION, 'APP_STL', 'gnustl_static'):
+    sdkbox.copy_files('android/protocols_gnustl_static', PLUGIN_PATH, ANDROID_PROJECT_DIR,{'protocols_gnustl_static':'protocols'})
+
+if sdkbox.android_has_key_value(sdkbox.APPLICATION, 'APP_STL', 'stlport_static'):
+    sdkbox.copy_files('android/protocols_stlport_static', PLUGIN_PATH, ANDROID_PROJECT_DIR,{'protocols_stlport_static':'protocols'})
+
+sdkbox.copy_files('protocols/android/libPluginProtocol.jar', ANDROID_PROJECT_DIR, ANDROID_PROJECT_DIR + 'libs/')
+sdkbox.copy_files(['protocols/res/drawable/btn_close.png', 'protocols/res/drawable/ui_ad.png'], ANDROID_PROJECT_DIR, ANDROID_PROJECT_DIR + 'res/drawable/')
+sdkbox.copy_files('protocols/res/values-en/plugin_string.xml', ANDROID_PROJECT_DIR, ANDROID_PROJECT_DIR + 'res/values-en/')
+sdkbox.copy_files('protocols/res/values/plugin_string.xml', ANDROID_PROJECT_DIR, ANDROID_PROJECT_DIR + 'res/values/')
+sdkbox.copy_files(['protocols/res/layout/plugin_ads.xml', 'protocols/res/layout/plugin_login.xml'], ANDROID_PROJECT_DIR, ANDROID_PROJECT_DIR + 'res/layout/')
+
+sdkbox.android_add_static_libraries(['PluginProtocolStatic'])
+
+sdkbox.android_add_calls(['import-add-path, $(LOCAL_PATH)/..', 'import-module,protocols/android'])
+
+sdkbox.android_set_permissions(['INTERNET', 'ACCESS_NETWORK_STATE', 'ACCESS_WIFI_STATE', 'RESTART_PACKAGES', 'KILL_BACKGROUND_PROCESSES'])
+
+#iOS
+if sdkbox.xcode_get_build_setting() == 'libc++':
+    sdkbox.copy_files('ios/protocols_libc++', PLUGIN_PATH, IOS_PROJECT_DIR, {'protocols_libc++':'protocols'})    
+else:
+    sdkbox.copy_files('ios/protocols_libstdc++', PLUGIN_PATH, IOS_PROJECT_DIR, {'protocols_libstdc++':'protocols'})
+
+sdkbox.xcode_add_folders(IOS_PROJECT_DIR + 'protocols')
+
+sdkbox.xcode_add_frameworks(['CFNetwork.framework', 'CoreFoundation.framework', 'MobileCoreServices.framework', 'SystemConfiguration.framework', 'MediaPlayer.framework', 'GameController.framework', 'Security.framework', 'libz.dylib' ])
+
+sdkbox.xcode_add_linker_flags('-ObjC')
+
+suffix = 'Tutorial'
+if COCOS_PROJECT_TYPE == 'cpp':
+    suffix = 'Cpp' + suffix
+    sdkbox.apply_patch(COCOS_CLASSES_DIR + 'AppDelegate.cpp', 'AppDelegate.cpp.patch', root=COCOS_CLASSES_DIR)
+    sdkbox.apply_patch(ANDROID_ACTIVITY_PATH + ANDROID_ACTIVITY_NAME + '.java', 'Activity.cpp.patch', root=ANDROID_ACTIVITY_PATH)
+    sdkbox.apply_patch(ANDROID_JNI_DIR + 'hellocpp/main.cpp', 'main.cpp.patch', root=ANDROID_JNI_DIR + 'hellocpp/')
+
+#JS
+if COCOS_PROJECT_TYPE == 'js':
+    suffix = 'Js' + suffix
+    sdkbox.copy_files(['jsbindings/jsb_anysdk_auto.cpp', 'jsbindings/jsb_anysdk_auto.hpp', 'jsbindings/jsb_anysdk_manual.cpp', 'jsbindings/jsb_anysdk_manual.hpp'], PLUGIN_PATH, COCOS_CLASSES_DIR)
+    android_js_sources = ['../../Classes/jsb_anysdk_auto.cpp', '../../Classes/jsb_anysdk_manual.cpp']
+    sdkbox.android_add_sources(android_js_sources)
+    sdkbox.copy_files('jsbindings/anysdkConst.js', PLUGIN_PATH, COCOS_PROJECT_DIR + 'src/')
+    sdkbox.apply_patch(COCOS_CLASSES_DIR + 'AppDelegate.cpp', 'AppDelegate.js.patch', root=COCOS_CLASSES_DIR)
+    sdkbox.apply_patch(ANDROID_ACTIVITY_PATH + ANDROID_ACTIVITY_NAME + '.java', 'Activity.js.patch', root=ANDROID_ACTIVITY_PATH)
+    sdkbox.apply_patch(ANDROID_JNI_DIR + 'hellojavascript/main.cpp', 'main.js.patch', root=ANDROID_JNI_DIR + 'hellojavascript/')
+
+#Lua
+if COCOS_PROJECT_TYPE == 'lua':
+    suffix = 'Lua' + suffix
+    sdkbox.copy_files(['luabindings/anysdk_manual_bindings.cpp', 'luabindings/anysdk_manual_bindings.h', 'luabindings/anysdkbindings.cpp', 'luabindings/anysdkbindings.h'], PLUGIN_PATH, COCOS_CLASSES_DIR)
+    android_lua_sources = ['../../Classes/anysdk_manual_bindings.cpp', '../../Classes/anysdkbindings.cpp']
+    sdkbox.android_add_sources(android_lua_sources)
+    sdkbox.copy_files('luabindings/anysdkConst.lua', PLUGIN_PATH, COCOS_PROJECT_DIR + 'src/')
+    sdkbox.apply_patch(COCOS_CLASSES_DIR + 'AppDelegate.cpp', 'AppDelegate.lua.patch', root=COCOS_CLASSES_DIR)
+    sdkbox.apply_patch(ANDROID_ACTIVITY_PATH + ANDROID_ACTIVITY_NAME + '.java', 'Activity.lua.patch', root=ANDROID_ACTIVITY_PATH)
+    sdkbox.apply_patch(ANDROID_JNI_DIR + 'hellolua/main.cpp', 'main.lua.patch', root=ANDROID_JNI_DIR + 'hellolua/')
+
+
+
+
+
+url = 'http://docs.anysdk.com/' + suffix
+sdkbox.puts('Please reference the online documentation to finish the integration:\n' + url)
+sdkbox.open_documentation(url)
+   	
+   	
