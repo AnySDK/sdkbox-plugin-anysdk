@@ -1,0 +1,15 @@
+--- main.cpp	2015-09-08 16:56:04.000000000 +0800
++++ main.cpp	2015-09-08 16:57:34.000000000 +0800
+@@ -9,8 +9,12 @@
+ #define  LOGD(...)  __android_log_print(ANDROID_LOG_DEBUG,LOG_TAG,__VA_ARGS__)
+ 
+ using namespace cocos2d;
++using namespace anysdk::framework;
+ 
+ void cocos_android_app_init (JNIEnv* env) {
+     LOGD("cocos_android_app_init");
+     AppDelegate *pAppDelegate = new AppDelegate();
++    JavaVM* vm;
++    env->GetJavaVM(&vm);
++    PluginJniHelper::setJavaVM(vm);
+ }

@@ -1,0 +1,42 @@
+--- AppDelegate.cpp	2014-07-10 21:06:56.000000000 +0800
++++ AppDelegate.cpp	2015-09-09 15:52:15.000000000 +0800
+@@ -1,5 +1,9 @@
+ #include "AppDelegate.h"
+ #include "HelloWorldScene.h"
++#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
++#include "AgentManager.h"
++using namespace anysdk::framework;
++#endif
+ 
+ USING_NS_CC;
+ 
+@@ -9,9 +13,29 @@
+ 
+ AppDelegate::~AppDelegate() 
+ {
++#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
++    AgentManager::getInstance()->unloadAllPlugins();
++#endif
+ }
+ 
+ bool AppDelegate::applicationDidFinishLaunching() {
++#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
++    /**
++     * appKey、appSecret、privateKey需要从打包工具中游戏管理界面获取，替换
++     * oauthLoginServer参数是游戏服务提供的用来做登陆验证转发的接口地址。
++    */
++    std::string oauthLoginServer = "OAUTH_LOGIN_SERVER";
++    std::string appKey = "APP_KEY";
++    std::string appSecret = "APP_SERCRET";
++    std::string privateKey = "PRIVATE_KEY";
++
++    AgentManager* pAgent = AgentManager::getInstance();
++    pAgent->init(appKey,appSecret,privateKey,oauthLoginServer);
++  
++   //使用框架中代理类进行插件初始化
++    pAgent->loadAllPlugins();
++#endif
++
+     // initialize director
+     CCDirector* pDirector = CCDirector::sharedDirector();
+     CCEGLView* pEGLView = CCEGLView::sharedOpenGLView();

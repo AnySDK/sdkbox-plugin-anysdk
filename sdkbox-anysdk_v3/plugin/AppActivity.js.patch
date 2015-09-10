@@ -1,0 +1,71 @@
+--- $(ANDROID_ACTIVITY_NAME).java	2015-09-09 18:45:55.000000000 +0800
++++ $(ANDROID_ACTIVITY_NAME).java	2015-09-09 18:45:51.000000000 +0800
+@@ -29,6 +29,10 @@
+ import org.cocos2dx.lib.Cocos2dxActivity;
+ import org.cocos2dx.lib.Cocos2dxGLSurfaceView;
+ 
++import android.os.Bundle;
++
++import com.anysdk.framework.PluginWrapper;
++
+ public class $(ANDROID_ACTIVITY_NAME) extends Cocos2dxActivity {
+ 	
+     @Override
+@@ -36,7 +40,56 @@
+         Cocos2dxGLSurfaceView glSurfaceView = new Cocos2dxGLSurfaceView(this);
+         // TestCpp should create stencil buffer
+         glSurfaceView.setEGLConfigChooser(5, 6, 5, 0, 16, 8);
+-
++        PluginWrapper.setGLSurfaceView(glSurfaceView);
+         return glSurfaceView;
+     }
++    
++    @Override
++	protected void onCreate(Bundle savedInstanceState) {
++		super.onCreate(savedInstanceState);
++		PluginWrapper.init(this);
++		
++	}
++
++	@Override
++	protected void onResume() {
++		super.onResume();
++		PluginWrapper.onResume();
++	}
++
++	@Override
++	protected void onPause() {
++		super.onPause();
++		PluginWrapper.onPause();
++	}
++
++	@Override
++	protected void onDestroy() {
++		super.onDestroy();
++		PluginWrapper.onDestroy();
++	}
++
++	@Override
++	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
++		super.onActivityResult(requestCode, resultCode, data);
++		PluginWrapper.onActivityResult(requestCode, resultCode, data);
++	}
++
++	@Override
++	protected void onNewIntent(Intent intent) {
++		super.onNewIntent(intent);
++		PluginWrapper.onNewIntent(intent);
++	}
++
++	@Override
++	protected void onRestart() {
++		super.onRestart();
++		PluginWrapper.onRestart();
++	}
++
++	@Override
++	protected void onStop() {
++		super.onStop();
++		PluginWrapper.onStop();
++	}
+ }
