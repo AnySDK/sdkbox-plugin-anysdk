@@ -1,6 +1,12 @@
---- main.cpp	2015-09-08 16:56:04.000000000 +0800
-+++ main.cpp	2015-09-08 16:57:34.000000000 +0800
-@@ -9,8 +9,12 @@
+--- main2.cpp	2015-10-14 16:04:26.000000000 +0800
++++ main.cpp	2015-10-14 15:49:57.000000000 +0800
+@@ -3,13 +3,18 @@
+ #include "platform/android/jni/JniHelper.h"
+ #include <jni.h>
+ #include <android/log.h>
++#include "PluginJniHelper.h"
+ 
+ #define  LOG_TAG    "main"
  #define  LOGD(...)  __android_log_print(ANDROID_LOG_DEBUG,LOG_TAG,__VA_ARGS__)
  
  using namespace cocos2d;
