@@ -1,9 +1,9 @@
 --- main.cpp	2015-09-06 08:34:06.000000000 +0800
-+++ main.cpp	2015-10-19 11:43:30.000000000 +0800
-@@ -3,13 +3,24 @@
- #include "platform/android/jni/JniHelper.h"
- #include <jni.h>
++++ main.cpp	2015-10-19 11:41:12.000000000 +0800
+@@ -5,15 +5,26 @@
  #include <android/log.h>
+ #include "ide-support/SimpleConfigParser.h"
+ #include "ide-support/CodeIDESupport.h"
 +#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) && (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
 +#include "PluginJniHelper.h"
 +#endif
@@ -25,3 +25,5 @@
 +    PluginJniHelper::setJavaVM(vm);
 +#endif
  }
+ 
+ extern "C"

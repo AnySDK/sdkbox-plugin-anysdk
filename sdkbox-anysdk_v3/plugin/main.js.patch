@@ -1,6 +1,6 @@
---- main.cpp	2015-09-06 08:34:06.000000000 +0800
-+++ main.cpp	2015-10-19 11:43:30.000000000 +0800
-@@ -3,13 +3,24 @@
+--- main3.1.cpp	2014-10-22 16:34:46.000000000 +0800
++++ main3.0.cpp	2015-09-10 11:34:00.000000000 +0800
+@@ -3,12 +3,27 @@
  #include "platform/android/jni/JniHelper.h"
  #include <jni.h>
  #include <android/log.h>
@@ -12,16 +12,19 @@
  #define  LOGD(...)  __android_log_print(ANDROID_LOG_DEBUG,LOG_TAG,__VA_ARGS__)
  
  using namespace cocos2d;
-+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) && (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
-+using namespace anysdk::framework;
-+#endif
  
- void cocos_android_app_init (JNIEnv* env) {
++extern "C"
++{
++	jint JNI_OnLoad(JavaVM *vm, void *reserved)
++	{
++    	JniHelper::setJavaVM(vm);
++#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) && (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
++    	anysdk::framework::PluginJniHelper::setJavaVM(vm);
++#endif
++    	return JNI_VERSION_1_4;
++	}
++}
++
+ void cocos_android_app_init (JNIEnv* env, jobject thiz) {
      LOGD("cocos_android_app_init");
      AppDelegate *pAppDelegate = new AppDelegate();
-+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) && (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
-+    JavaVM* vm;
-+    env->GetJavaVM(&vm);
-+    PluginJniHelper::setJavaVM(vm);
-+#endif
- }

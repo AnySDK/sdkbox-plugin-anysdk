@@ -119,8 +119,10 @@ if COCOS_PROJECT_TYPE == 'lua':
         sdkbox.apply_patch(COCOS_CLASSES_DIR + 'AppDelegate.cpp', 'AppDelegate.lua3.8.patch', root=COCOS_CLASSES_DIR)
 
     sdkbox.apply_patch(ANDROID_ACTIVITY_PATH + ANDROID_ACTIVITY_NAME + '.java', 'AppActivity.lua.patch', root=ANDROID_ACTIVITY_PATH)
-    if sdkbox.satisfies_cocos_version('3.3'):
-        sdkbox.apply_patch(ANDROID_JNI_DIR + 'hellolua/main.cpp', 'main.cpp.patch', root=ANDROID_JNI_DIR + 'hellolua/')
+    if sdkbox.satisfies_cocos_version('3.5','3.5'):
+        sdkbox.apply_patch(ANDROID_JNI_DIR + 'hellolua/main.cpp', 'main.lua.3.5.patch', root=ANDROID_JNI_DIR + 'hellolua/')
+    elif sdkbox.satisfies_cocos_version('3.3'):
+        sdkbox.apply_patch(ANDROID_JNI_DIR + 'hellolua/main.cpp', 'main.lua.patch', root=ANDROID_JNI_DIR + 'hellolua/')
     else:
         sdkbox.apply_patch(ANDROID_JNI_DIR + 'hellolua/main.cpp', 'main.3.0.patch', root=ANDROID_JNI_DIR + 'hellolua/')
         sdkbox.apply_patch(ANDROID_PROJECT_DIR + '../javaactivity.cpp', 'javaactivity.cpp.patch', root=ANDROID_PROJECT_DIR + '../')
