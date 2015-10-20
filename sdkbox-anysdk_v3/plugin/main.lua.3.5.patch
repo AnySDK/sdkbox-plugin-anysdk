@@ -1,9 +1,9 @@
---- main.cpp	2015-09-06 08:34:06.000000000 +0800
-+++ main.cpp	2015-10-19 11:43:30.000000000 +0800
-@@ -3,13 +3,24 @@
- #include "platform/android/jni/JniHelper.h"
+--- main.cpp	2015-03-13 05:25:46.000000000 +0800
++++ main.cpp	2015-10-19 11:47:00.000000000 +0800
+@@ -4,15 +4,26 @@
  #include <jni.h>
  #include <android/log.h>
+ #include "ide-support/SimpleConfigParser.h"
 +#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) && (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
 +#include "PluginJniHelper.h"
 +#endif
@@ -16,7 +16,7 @@
 +using namespace anysdk::framework;
 +#endif
  
- void cocos_android_app_init (JNIEnv* env) {
+ void cocos_android_app_init (JNIEnv* env, jobject thiz) {
      LOGD("cocos_android_app_init");
      AppDelegate *pAppDelegate = new AppDelegate();
 +#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) && (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
@@ -25,3 +25,5 @@
 +    PluginJniHelper::setJavaVM(vm);
 +#endif
  }
+ 
+ extern "C"
