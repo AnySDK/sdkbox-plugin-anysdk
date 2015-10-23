@@ -48,7 +48,7 @@ if COCOS_PROJECT_TYPE == 'cpp':
         sdkbox.apply_patch(ANDROID_JNI_DIR + 'hellocpp/main.cpp', 'main.cpp.patch', root=ANDROID_JNI_DIR + 'hellocpp/')
     else:
         sdkbox.apply_patch(ANDROID_JNI_DIR + 'hellocpp/main.cpp', 'main.3.0.patch', root=ANDROID_JNI_DIR + 'hellocpp/')
-        sdkbox.apply_patch(ANDROID_PROJECT_DIR + '../javaactivity.cpp', 'javaactivity.cpp.patch', root=ANDROID_PROJECT_DIR + '../')
+        sdkbox.apply_patch(ANDROID_COCOS_PACKAGE_ROOT + '../javaactivity.cpp', 'javaactivity.cpp.patch', root=ANDROID_COCOS_PACKAGE_ROOT + '../')
 
 #JS
 if COCOS_PROJECT_TYPE == 'js':
@@ -88,7 +88,7 @@ if COCOS_PROJECT_TYPE == 'js':
         sdkbox.apply_patch(ANDROID_JNI_DIR + 'hellojavascript/main.cpp', 'main.cpp.patch', root=ANDROID_JNI_DIR + 'hellojavascript/')
     else:
         sdkbox.apply_patch(ANDROID_JNI_DIR + 'hellojavascript/main.cpp', 'main.3.0.patch', root=ANDROID_JNI_DIR + 'hellojavascript/')
-        sdkbox.apply_patch(ANDROID_PROJECT_DIR + '../javaactivity.cpp', 'javaactivity.cpp.patch', root=ANDROID_PROJECT_DIR + '../')
+        sdkbox.apply_patch(ANDROID_COCOS_PACKAGE_ROOT + '../javaactivity.cpp', 'javaactivity.cpp.patch', root=ANDROID_COCOS_PACKAGE_ROOT + '../')
 
 #Lua
 if COCOS_PROJECT_TYPE == 'lua':
@@ -125,7 +125,7 @@ if COCOS_PROJECT_TYPE == 'lua':
         sdkbox.apply_patch(ANDROID_JNI_DIR + 'hellolua/main.cpp', 'main.lua.patch', root=ANDROID_JNI_DIR + 'hellolua/')
     else:
         sdkbox.apply_patch(ANDROID_JNI_DIR + 'hellolua/main.cpp', 'main.3.0.patch', root=ANDROID_JNI_DIR + 'hellolua/')
-        sdkbox.apply_patch(ANDROID_PROJECT_DIR + '../javaactivity.cpp', 'javaactivity.cpp.patch', root=ANDROID_PROJECT_DIR + '../')
+        sdkbox.apply_patch(ANDROID_COCOS_PACKAGE_ROOT + '../javaactivity.cpp', 'javaactivity.cpp.patch', root=ANDROID_COCOS_PACKAGE_ROOT + '../')
 
 url = 'http://docs.anysdk.com/' + suffix
 sdkbox.puts('Please reference the online documentation to finish the integration:\n' + url)
