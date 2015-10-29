@@ -1,5 +1,5 @@
 --- AppDelegate.cpp	2015-03-13 05:25:46.000000000 +0800
-+++ AppDelegate.cpp	2015-09-10 16:55:16.000000000 +0800
++++ AppDelegate.cpp	2015-10-23 17:28:36.000000000 +0800
 @@ -4,6 +4,13 @@
  #include "cocos2d.h"
  #include "lua_module_register.h"
@@ -18,7 +18,7 @@
  AppDelegate::~AppDelegate()
  {
      SimpleAudioEngine::end();
-+        
++    
 +#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
 +    AgentManager::getInstance()->unloadAllPlugins();
 +#endif
@@ -48,18 +48,18 @@
      // set default FPS
      Director::getInstance()->setAnimationInterval(1.0 / 60.0f);
     
-@@ -49,6 +76,14 @@
+@@ -51,7 +78,13 @@
  
-     register_all_packages();
- 
+     LuaStack* stack = engine->getLuaStack();
+     stack->setXXTEAKeyAndSign("2dxLua", strlen("2dxLua"), "XXTEA", strlen("XXTEA"));
+-    
++  
 +#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
-+    LuaStack* stack = engine->getLuaStack();
 +    lua_getglobal(stack->getLuaState(), "_G");
 +    tolua_anysdk_open(stack->getLuaState());
 +    tolua_anysdk_manual_open(stack->getLuaState());
 +    lua_pop(stack->getLuaState(), 1);
 +#endif
-+
-     LuaStack* stack = engine->getLuaStack();
-     stack->setXXTEAKeyAndSign("2dxLua", strlen("2dxLua"), "XXTEA", strlen("XXTEA"));
-     
+     if (engine->executeScriptFile("src/main.lua"))
+     {
+         return false;

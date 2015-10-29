@@ -44,7 +44,9 @@ if COCOS_PROJECT_TYPE == 'js':
     suffix = 'Js' + suffix
     sdkbox.copy_files(['jsbindings/jsb_anysdk_auto.cpp', 'jsbindings/jsb_anysdk_auto.hpp', 'jsbindings/jsb_anysdk_manual.cpp', 'jsbindings/jsb_anysdk_manual.hpp'], PLUGIN_PATH, COCOS_CLASSES_DIR)
     android_js_sources = ['../../Classes/jsb_anysdk_auto.cpp', '../../Classes/jsb_anysdk_manual.cpp']
+    ios_js_sources = ['jsb_anysdk_auto.cpp', 'jsb_anysdk_manual.cpp']
     sdkbox.android_add_sources(android_js_sources)
+    sdkbox.xcode_add_sources(ios_js_sources)
     sdkbox.copy_files('jsbindings/anysdkConst.js', PLUGIN_PATH, COCOS_PROJECT_DIR + 'src/')
     sdkbox.apply_patch(COCOS_CLASSES_DIR + 'AppDelegate.cpp', 'AppDelegate.js.patch', root=COCOS_CLASSES_DIR)
     sdkbox.apply_patch(ANDROID_ACTIVITY_PATH + ANDROID_ACTIVITY_NAME + '.java', 'Activity.js.patch', root=ANDROID_ACTIVITY_PATH)
@@ -55,7 +57,9 @@ if COCOS_PROJECT_TYPE == 'lua':
     suffix = 'Lua' + suffix
     sdkbox.copy_files(['luabindings/anysdk_manual_bindings.cpp', 'luabindings/anysdk_manual_bindings.h', 'luabindings/anysdkbindings.cpp', 'luabindings/anysdkbindings.h'], PLUGIN_PATH, COCOS_CLASSES_DIR)
     android_lua_sources = ['../../Classes/anysdk_manual_bindings.cpp', '../../Classes/anysdkbindings.cpp']
+    ios_lua_sources = ['anysdk_manual_bindings.cpp', 'anysdkbindings.cpp']
     sdkbox.android_add_sources(android_lua_sources)
+    sdkbox.xcode_add_sources(ios_lua_sources)
     sdkbox.copy_files('luabindings/anysdkConst.lua', PLUGIN_PATH, COCOS_PROJECT_DIR + 'src/')
     sdkbox.apply_patch(COCOS_CLASSES_DIR + 'AppDelegate.cpp', 'AppDelegate.lua.patch', root=COCOS_CLASSES_DIR)
     sdkbox.apply_patch(ANDROID_ACTIVITY_PATH + ANDROID_ACTIVITY_NAME + '.java', 'Activity.lua.patch', root=ANDROID_ACTIVITY_PATH)

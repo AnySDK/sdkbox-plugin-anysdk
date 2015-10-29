@@ -1,5 +1,5 @@
 --- AppDelegate.cpp	2015-01-28 09:56:14.000000000 +0800
-+++ AppDelegate.cpp	2015-09-10 16:55:14.000000000 +0800
++++ AppDelegate.cpp	2015-10-23 17:22:44.000000000 +0800
 @@ -12,6 +12,12 @@
  #include "runtime/Runtime.h"
  #endif
@@ -47,18 +47,18 @@
      // set default FPS
      Director::getInstance()->setAnimationInterval(1.0 / 60.0f);
     
-@@ -54,6 +80,14 @@
-     lua_State* L = engine->getLuaStack()->getLuaState();
-     lua_module_register(L);
+@@ -59,7 +85,13 @@
  
+     LuaStack* stack = engine->getLuaStack();
+     stack->setXXTEAKeyAndSign("2dxLua", strlen("2dxLua"), "XXTEA", strlen("XXTEA"));
+-    
++
 +#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
-+    LuaStack* stack = engine->getLuaStack();
 +    lua_getglobal(stack->getLuaState(), "_G");
 +    tolua_anysdk_open(stack->getLuaState());
 +    tolua_anysdk_manual_open(stack->getLuaState());
 +    lua_pop(stack->getLuaState(), 1);
 +#endif
-+
-     // If you want to use Quick-Cocos2d-X, please uncomment below code
-     // register_all_quick_manual(L);
- 
+     //register custom function
+     //LuaStack* stack = engine->getLuaStack();
+     //register_custom_function(stack->getLuaState());
