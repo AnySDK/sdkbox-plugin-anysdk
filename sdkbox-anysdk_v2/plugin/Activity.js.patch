@@ -1,5 +1,5 @@
---- js.java	2015-09-09 16:25:01.000000000 +0800
-+++ js.java	2015-09-09 16:22:44.000000000 +0800
+--- $(ANDROID_ACTIVITY_NAME).java	2015-09-09 16:25:01.000000000 +0800
++++ $(ANDROID_ACTIVITY_NAME).java	2015-09-09 16:22:44.000000000 +0800
 @@ -24,16 +24,64 @@
  package com.anysdk.js;
  
@@ -11,7 +11,7 @@
 +import android.content.Intent;
  import android.os.Bundle;
  
- public class js extends Cocos2dxActivity{
+ public class $(ANDROID_ACTIVITY_NAME) extends Cocos2dxActivity{
  	
  	protected void onCreate(Bundle savedInstanceState){
  		super.onCreate(savedInstanceState);

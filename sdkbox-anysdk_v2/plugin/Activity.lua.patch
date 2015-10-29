@@ -1,5 +1,5 @@
---- lua.java	2015-09-09 16:23:41.000000000 +0800
-+++ lua.java	2015-09-09 16:21:43.000000000 +0800
+--- $(ANDROID_ACTIVITY_NAME).java	2015-09-09 16:23:41.000000000 +0800
++++ $(ANDROID_ACTIVITY_NAME).java	2015-09-09 16:21:43.000000000 +0800
 @@ -25,13 +25,18 @@
  import org.cocos2dx.lib.Cocos2dxActivity;
  import org.cocos2dx.lib.Cocos2dxGLSurfaceView;
@@ -11,7 +11,7 @@
  import android.os.Bundle;
  import android.view.KeyEvent;
  
- public class lua extends Cocos2dxActivity{
+ public class $(ANDROID_ACTIVITY_NAME) extends Cocos2dxActivity{
  	protected void onCreate(Bundle savedInstanceState){
  		super.onCreate(savedInstanceState);
 +		PluginWrapper.init(this);
