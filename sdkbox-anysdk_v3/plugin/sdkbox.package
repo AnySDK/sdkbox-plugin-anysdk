@@ -44,8 +44,11 @@ if COCOS_PROJECT_TYPE == 'cpp':
     elif sdkbox.satisfies_cocos_version('3.7'):
         sdkbox.apply_patch(COCOS_CLASSES_DIR + 'AppDelegate.cpp', 'AppDelegate.cpp3.7.patch', root=COCOS_CLASSES_DIR)
     sdkbox.apply_patch(ANDROID_ACTIVITY_PATH + ANDROID_ACTIVITY_NAME + '.java', 'AppActivity.cpp.patch', root=ANDROID_ACTIVITY_PATH)
-    if sdkbox.satisfies_cocos_version('3.3'):
-        sdkbox.apply_patch(ANDROID_JNI_DIR + 'hellocpp/main.cpp', 'main.cpp.patch', root=ANDROID_JNI_DIR + 'hellocpp/')
+
+    if sdkbox.satisfies_cocos_version('3.7'):
+        sdkbox.apply_patch(ANDROID_JNI_DIR + 'hellocpp/main.cpp', 'main.cpp3.7.patch', root=ANDROID_JNI_DIR + 'hellocpp/')
+    elif sdkbox.satisfies_cocos_version('3.3','3.6'):
+        sdkbox.apply_patch(ANDROID_JNI_DIR + 'hellocpp/main.cpp', 'main.cpp3.1.patch', root=ANDROID_JNI_DIR + 'hellocpp/')
     else:
         sdkbox.apply_patch(ANDROID_JNI_DIR + 'hellocpp/main.cpp', 'main.3.0.patch', root=ANDROID_JNI_DIR + 'hellocpp/')
         sdkbox.apply_patch(ANDROID_COCOS_PACKAGE_ROOT + '../javaactivity.cpp', 'javaactivity.cpp.patch', root=ANDROID_COCOS_PACKAGE_ROOT + '../')
@@ -84,8 +87,10 @@ if COCOS_PROJECT_TYPE == 'js':
 
     sdkbox.apply_patch(ANDROID_ACTIVITY_PATH + ANDROID_ACTIVITY_NAME + '.java', 'AppActivity.js.patch', root=ANDROID_ACTIVITY_PATH)
 
-    if sdkbox.satisfies_cocos_version('3.1'):
-        sdkbox.apply_patch(ANDROID_JNI_DIR + 'hellojavascript/main.cpp', 'main.cpp.patch', root=ANDROID_JNI_DIR + 'hellojavascript/')
+    if sdkbox.satisfies_cocos_version('3.7'):
+        sdkbox.apply_patch(ANDROID_JNI_DIR + 'hellojavascript/main.cpp', 'main.cpp3.7.patch', root=ANDROID_JNI_DIR + 'hellojavascript/')
+    elif sdkbox.satisfies_cocos_version('3.1','3.6'):
+        sdkbox.apply_patch(ANDROID_JNI_DIR + 'hellojavascript/main.cpp', 'main.cpp3.1.patch', root=ANDROID_JNI_DIR + 'hellojavascript/')
     else:
         sdkbox.apply_patch(ANDROID_JNI_DIR + 'hellojavascript/main.cpp', 'main.3.0.patch', root=ANDROID_JNI_DIR + 'hellojavascript/')
         sdkbox.apply_patch(ANDROID_COCOS_PACKAGE_ROOT + '../javaactivity.cpp', 'javaactivity.cpp.patch', root=ANDROID_COCOS_PACKAGE_ROOT + '../')
