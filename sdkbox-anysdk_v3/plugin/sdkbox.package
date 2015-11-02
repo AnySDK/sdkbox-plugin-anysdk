@@ -44,8 +44,11 @@ if COCOS_PROJECT_TYPE == 'cpp':
     elif sdkbox.satisfies_cocos_version('3.7'):
         sdkbox.apply_patch(COCOS_CLASSES_DIR + 'AppDelegate.cpp', 'AppDelegate.cpp3.7.patch', root=COCOS_CLASSES_DIR)
     sdkbox.apply_patch(ANDROID_ACTIVITY_PATH + ANDROID_ACTIVITY_NAME + '.java', 'AppActivity.cpp.patch', root=ANDROID_ACTIVITY_PATH)
-    if sdkbox.satisfies_cocos_version('3.3'):
-        sdkbox.apply_patch(ANDROID_JNI_DIR + 'hellocpp/main.cpp', 'main.cpp.patch', root=ANDROID_JNI_DIR + 'hellocpp/')
+
+    if sdkbox.satisfies_cocos_version('3.7'):
+        sdkbox.apply_patch(ANDROID_JNI_DIR + 'hellocpp/main.cpp', 'main.cpp3.7.patch', root=ANDROID_JNI_DIR + 'hellocpp/')
+    elif sdkbox.satisfies_cocos_version('3.3','3.6'):
+        sdkbox.apply_patch(ANDROID_JNI_DIR + 'hellocpp/main.cpp', 'main.cpp3.1.patch', root=ANDROID_JNI_DIR + 'hellocpp/')
     else:
         sdkbox.apply_patch(ANDROID_JNI_DIR + 'hellocpp/main.cpp', 'main.3.0.patch', root=ANDROID_JNI_DIR + 'hellocpp/')
         sdkbox.apply_patch(ANDROID_COCOS_PACKAGE_ROOT + '../javaactivity.cpp', 'javaactivity.cpp.patch', root=ANDROID_COCOS_PACKAGE_ROOT + '../')
@@ -56,11 +59,15 @@ if COCOS_PROJECT_TYPE == 'js':
     if sdkbox.satisfies_cocos_version('3.0','3.4'):
         sdkbox.copy_files(['jsbindings/3.x/autoanysdkbindings.cpp', 'jsbindings/3.x/autoanysdkbindings.hpp', 'jsbindings/3.x/manualanysdkbindings.cpp', 'jsbindings/3.x/manualanysdkbindings.hpp'], PLUGIN_PATH, COCOS_CLASSES_DIR)
         android_js_sources = ['../../Classes/manualanysdkbindings.cpp', '../../Classes/autoanysdkbindings.cpp']
+        ios_js_sources = ['manualanysdkbindings.cpp', 'Classes/autoanysdkbindings.cpp']
         sdkbox.android_add_sources(android_js_sources)
+        sdkbox.xcode_add_sources(ios_js_sources)
 
     if sdkbox.satisfies_cocos_version('3.5'):
         sdkbox.copy_files(['jsbindings/3.5/jsb_anysdk_basic_conversions.cpp', 'jsbindings/3.5/jsb_anysdk_basic_conversions.h', 'jsbindings/3.5/manualanysdkbindings.cpp', 'jsbindings/3.5/manualanysdkbindings.hpp', 'jsbindings/3.5/jsb_anysdk_protocols_auto.cpp', 'jsbindings/3.5/jsb_anysdk_protocols_auto.hpp'], PLUGIN_PATH, COCOS_CLASSES_DIR)
         android_js_sources = ['../../Classes/jsb_anysdk_basic_conversions.cpp', '../../Classes/manualanysdkbindings.cpp', '../../Classes/jsb_anysdk_protocols_auto.cpp']
+        ios_js_sources = ['jsb_anysdk_basic_conversions.cpp', 'manualanysdkbindings.cpp', 'jsb_anysdk_protocols_auto.cpp']
+        sdkbox.xcode_add_sources(ios_js_sources)
         sdkbox.android_add_sources(android_js_sources)
 
     sdkbox.copy_files('jsbindings/anysdkConst.js', PLUGIN_PATH, COCOS_PROJECT_DIR + 'src/')
@@ -84,8 +91,10 @@ if COCOS_PROJECT_TYPE == 'js':
 
     sdkbox.apply_patch(ANDROID_ACTIVITY_PATH + ANDROID_ACTIVITY_NAME + '.java', 'AppActivity.js.patch', root=ANDROID_ACTIVITY_PATH)
 
-    if sdkbox.satisfies_cocos_version('3.1'):
-        sdkbox.apply_patch(ANDROID_JNI_DIR + 'hellojavascript/main.cpp', 'main.cpp.patch', root=ANDROID_JNI_DIR + 'hellojavascript/')
+    if sdkbox.satisfies_cocos_version('3.7'):
+        sdkbox.apply_patch(ANDROID_JNI_DIR + 'hellojavascript/main.cpp', 'main.cpp3.7.patch', root=ANDROID_JNI_DIR + 'hellojavascript/')
+    elif sdkbox.satisfies_cocos_version('3.1','3.6'):
+        sdkbox.apply_patch(ANDROID_JNI_DIR + 'hellojavascript/main.cpp', 'main.cpp3.1.patch', root=ANDROID_JNI_DIR + 'hellojavascript/')
     else:
         sdkbox.apply_patch(ANDROID_JNI_DIR + 'hellojavascript/main.cpp', 'main.3.0.patch', root=ANDROID_JNI_DIR + 'hellojavascript/')
         sdkbox.apply_patch(ANDROID_COCOS_PACKAGE_ROOT + '../javaactivity.cpp', 'javaactivity.cpp.patch', root=ANDROID_COCOS_PACKAGE_ROOT + '../')
@@ -95,7 +104,9 @@ if COCOS_PROJECT_TYPE == 'lua':
     suffix = 'Lua' + suffix
     sdkbox.copy_files(['luabindings/anysdk_manual_bindings.cpp', 'luabindings/anysdk_manual_bindings.h', 'luabindings/anysdkbindings.cpp', 'luabindings/anysdkbindings.h'], PLUGIN_PATH, COCOS_CLASSES_DIR)
     android_lua_sources = ['../../Classes/anysdk_manual_bindings.cpp', '../../Classes/anysdkbindings.cpp']
+    ios_lua_sources = ['anysdk_manual_bindings.cpp', 'anysdkbindings.cpp']
     sdkbox.android_add_sources(android_lua_sources)
+    sdkbox.xcode_add_sources(ios_lua_sources)
     if sdkbox.satisfies_cocos_version('3.0','3.4'):
     	sdkbox.copy_files('luabindings/anysdkConst.lua', PLUGIN_PATH, COCOS_PROJECT_DIR + 'src/')
     if sdkbox.satisfies_cocos_version('3.5'):
