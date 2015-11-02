@@ -48,7 +48,10 @@ if COCOS_PROJECT_TYPE == 'js':
     sdkbox.android_add_sources(android_js_sources)
     sdkbox.xcode_add_sources(ios_js_sources)
     sdkbox.copy_files('jsbindings/anysdkConst.js', PLUGIN_PATH, COCOS_PROJECT_DIR + 'src/')
-    sdkbox.apply_patch(COCOS_CLASSES_DIR + 'AppDelegate.cpp', 'AppDelegate.js.patch', root=COCOS_CLASSES_DIR)
+    if sdkbox.satisfies_cocos_version('2.2.1'):
+        sdkbox.apply_patch(COCOS_CLASSES_DIR + 'AppDelegate.cpp', 'AppDelegate.js.2.2.1.patch', root=COCOS_CLASSES_DIR)
+    else:
+        sdkbox.apply_patch(COCOS_CLASSES_DIR + 'AppDelegate.cpp', 'AppDelegate.js.2.1.4.patch', root=COCOS_CLASSES_DIR)
     sdkbox.apply_patch(ANDROID_ACTIVITY_PATH + ANDROID_ACTIVITY_NAME + '.java', 'Activity.js.patch', root=ANDROID_ACTIVITY_PATH)
     sdkbox.apply_patch(ANDROID_JNI_DIR + 'hellojavascript/main.cpp', 'main.js.patch', root=ANDROID_JNI_DIR + 'hellojavascript/')
 
