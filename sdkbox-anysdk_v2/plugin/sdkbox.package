@@ -21,16 +21,17 @@ sdkbox.android_add_calls(['import-add-path, $(LOCAL_PATH)/..', 'import-module,pr
 sdkbox.android_set_permissions(['INTERNET', 'ACCESS_NETWORK_STATE', 'ACCESS_WIFI_STATE', 'RESTART_PACKAGES', 'KILL_BACKGROUND_PROCESSES'])
 
 #iOS
-if sdkbox.xcode_get_build_setting() == 'libc++':
-    sdkbox.copy_files('ios/protocols_libc++', PLUGIN_PATH, IOS_PROJECT_DIR, {'protocols_libc++':'protocols'})    
-else:
-    sdkbox.copy_files('ios/protocols_libstdc++', PLUGIN_PATH, IOS_PROJECT_DIR, {'protocols_libstdc++':'protocols'})
+if IOS_PROJECT_DIR != 'n/a':
+    if sdkbox.xcode_get_build_setting() == 'libc++':
+        sdkbox.copy_files('ios/protocols_libc++', PLUGIN_PATH, IOS_PROJECT_DIR, {'protocols_libc++':'protocols'})    
+    else:
+        sdkbox.copy_files('ios/protocols_libstdc++', PLUGIN_PATH, IOS_PROJECT_DIR, {'protocols_libstdc++':'protocols'})
 
-sdkbox.xcode_add_folders(IOS_PROJECT_DIR + 'protocols')
+    sdkbox.xcode_add_folders(IOS_PROJECT_DIR + 'protocols')
 
-sdkbox.xcode_add_frameworks(['CFNetwork.framework', 'CoreFoundation.framework', 'MobileCoreServices.framework', 'SystemConfiguration.framework', 'MediaPlayer.framework', 'GameController.framework', 'Security.framework', 'libz.dylib' ])
+    sdkbox.xcode_add_frameworks(['CFNetwork.framework', 'CoreFoundation.framework', 'MobileCoreServices.framework', 'SystemConfiguration.framework', 'MediaPlayer.framework', 'GameController.framework', 'Security.framework', 'libz.dylib' ])
 
-sdkbox.xcode_add_linker_flags('-ObjC')
+    sdkbox.xcode_add_linker_flags('-ObjC')
 
 suffix = 'Tutorial'
 if COCOS_PROJECT_TYPE == 'cpp':
@@ -46,7 +47,8 @@ if COCOS_PROJECT_TYPE == 'js':
     android_js_sources = ['../../Classes/jsb_anysdk_auto.cpp', '../../Classes/jsb_anysdk_manual.cpp']
     ios_js_sources = ['jsb_anysdk_auto.cpp', 'jsb_anysdk_manual.cpp']
     sdkbox.android_add_sources(android_js_sources)
-    sdkbox.xcode_add_sources(ios_js_sources)
+    if IOS_PROJECT_DIR != 'n/a':
+        sdkbox.xcode_add_sources(ios_js_sources)
     sdkbox.copy_files('jsbindings/anysdkConst.js', PLUGIN_PATH, COCOS_PROJECT_DIR + 'src/')
     if sdkbox.satisfies_cocos_version('2.2.1'):
         sdkbox.apply_patch(COCOS_CLASSES_DIR + 'AppDelegate.cpp', 'AppDelegate.js.2.2.1.patch', root=COCOS_CLASSES_DIR)
@@ -62,7 +64,8 @@ if COCOS_PROJECT_TYPE == 'lua':
     android_lua_sources = ['../../Classes/anysdk_manual_bindings.cpp', '../../Classes/anysdkbindings.cpp']
     ios_lua_sources = ['anysdk_manual_bindings.cpp', 'anysdkbindings.cpp']
     sdkbox.android_add_sources(android_lua_sources)
-    sdkbox.xcode_add_sources(ios_lua_sources)
+    if IOS_PROJECT_DIR != 'n/a':
+        sdkbox.xcode_add_sources(ios_lua_sources)
     sdkbox.copy_files('luabindings/anysdkConst.lua', PLUGIN_PATH, COCOS_PROJECT_DIR + 'src/')
     sdkbox.apply_patch(COCOS_CLASSES_DIR + 'AppDelegate.cpp', 'AppDelegate.lua.patch', root=COCOS_CLASSES_DIR)
     sdkbox.apply_patch(ANDROID_ACTIVITY_PATH + ANDROID_ACTIVITY_NAME + '.java', 'Activity.lua.patch', root=ANDROID_ACTIVITY_PATH)
