@@ -4,7 +4,7 @@
  #include "platform/android/jni/JniHelper.h"
  #include <jni.h>
  #include <android/log.h>
-+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) && (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
++#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) || (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
 +#include "PluginJniHelper.h"
 +#endif
  
@@ -15,7 +15,7 @@
  {
      JniHelper::setJavaVM(vm);
 -
-+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) && (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
++#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) || (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
 +    anysdk::framework::PluginJniHelper::setJavaVM(vm);
 +#endif
      return JNI_VERSION_1_4;
