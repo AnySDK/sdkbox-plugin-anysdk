@@ -4,7 +4,7 @@
  #include <jni.h>
  #include <android/log.h>
  #include "ide-support/SimpleConfigParser.h"
-+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) && (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
++#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) || (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
 +#include "PluginJniHelper.h"
 +#endif
  
@@ -12,14 +12,14 @@
  #define  LOGD(...)  __android_log_print(ANDROID_LOG_DEBUG,LOG_TAG,__VA_ARGS__)
  
  using namespace cocos2d;
-+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) && (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
++#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) || (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
 +using namespace anysdk::framework;
 +#endif
  
  void cocos_android_app_init (JNIEnv* env, jobject thiz) {
      LOGD("cocos_android_app_init");
      AppDelegate *pAppDelegate = new AppDelegate();
-+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) && (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
++#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) || (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
 +    JavaVM* vm;
 +    env->GetJavaVM(&vm);
 +    PluginJniHelper::setJavaVM(vm);
