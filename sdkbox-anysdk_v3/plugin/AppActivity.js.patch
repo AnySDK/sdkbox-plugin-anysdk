@@ -7,7 +7,7 @@
 +import android.os.Bundle;
 +
 +import com.anysdk.framework.PluginWrapper;
-+
++import android.content.Intent;
  public class $(ANDROID_ACTIVITY_NAME) extends Cocos2dxActivity {
  	
      @Override
