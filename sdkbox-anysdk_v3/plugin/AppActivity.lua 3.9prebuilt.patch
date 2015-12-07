@@ -1,0 +1,68 @@
+--- AppActivity.java	2015-12-07 14:51:36.000000000 +0800
++++ AppActivity.java	2015-12-07 16:55:16.000000000 +0800
+@@ -33,6 +33,9 @@
+ import java.util.ArrayList;
+ 
+ import org.cocos2dx.lib.Cocos2dxActivity;
++import org.cocos2dx.lib.Cocos2dxGLSurfaceView;
++
++import com.anysdk.framework.PluginWrapper;
+ 
+ import android.app.AlertDialog;
+ import android.content.Context;
+@@ -58,6 +61,8 @@
+     @Override
+     protected void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
++        PluginWrapper.init(this);
++        PluginWrapper.setGLSurfaceView(Cocos2dxGLSurfaceView.getInstance());
+         
+         if(nativeIsLandScape()) {
+             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+@@ -127,4 +132,46 @@
+     private static native boolean nativeIsLandScape();
+     private static native boolean nativeIsDebug();
+     
++	@Override
++	protected void onResume() {
++		super.onResume();
++		PluginWrapper.onResume();
++	}
++
++	@Override
++	protected void onPause() {
++		super.onPause();
++		PluginWrapper.onPause();
++	}
++
++	@Override
++	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
++		super.onActivityResult(requestCode, resultCode, data);
++		PluginWrapper.onActivityResult(requestCode, resultCode, data);
++	}
++
++	@Override
++	protected void onDestroy() {
++		super.onDestroy();
++		PluginWrapper.onDestroy();
++	}
++
++	@Override
++	protected void onNewIntent(Intent intent) {
++		super.onNewIntent(intent);
++		PluginWrapper.onNewIntent(intent);
++	}
++
++	@Override
++	protected void onRestart() {
++		super.onRestart();
++		PluginWrapper.onRestart();
++	}
++
++	@Override
++	protected void onStop() {
++		super.onStop();
++		PluginWrapper.onStop();
++	}  
++    
+ }
