@@ -1,0 +1,67 @@
+--- AppActivity.java	2015-12-07 14:51:30.000000000 +0800
++++ AppActivity.java	2015-12-07 17:41:44.000000000 +0800
+@@ -28,6 +28,9 @@
+ 
+ import org.cocos2dx.lib.Cocos2dxActivity;
+ import org.cocos2dx.lib.Cocos2dxGLSurfaceView;
++
++import com.anysdk.framework.PluginWrapper;
++import android.content.Intent;
+ import android.content.pm.ActivityInfo;
+ import android.net.wifi.WifiInfo;
+ import android.net.wifi.WifiManager;
+@@ -45,6 +48,8 @@
+     protected void onCreate(Bundle savedInstanceState) {
+         // TODO Auto-generated method stub
+         super.onCreate(savedInstanceState);
++        PluginWrapper.init(this);
++        PluginWrapper.setGLSurfaceView(Cocos2dxGLSurfaceView.getInstance());
+         
+         if(nativeIsLandScape()) {
+             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+@@ -80,4 +85,45 @@
+     private static native boolean nativeIsLandScape();
+     private static native boolean nativeIsDebug();
+     
++	@Override
++	protected void onResume() {
++		super.onResume();
++		PluginWrapper.onResume();
++	}
++
++	@Override
++	protected void onPause() {
++		super.onPause();
++		PluginWrapper.onPause();
++	}
++
++	@Override
++	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
++		super.onActivityResult(requestCode, resultCode, data);
++		PluginWrapper.onActivityResult(requestCode, resultCode, data);
++	}
++
++	@Override
++	protected void onDestroy() {
++		super.onDestroy();
++		PluginWrapper.onDestroy();
++	}
++
++	@Override
++	protected void onNewIntent(Intent intent) {
++		super.onNewIntent(intent);
++		PluginWrapper.onNewIntent(intent);
++	}
++
++	@Override
++	protected void onRestart() {
++		super.onRestart();
++		PluginWrapper.onRestart();
++	}
++
++	@Override
++	protected void onStop() {
++		super.onStop();
++	}	
++    
+ }

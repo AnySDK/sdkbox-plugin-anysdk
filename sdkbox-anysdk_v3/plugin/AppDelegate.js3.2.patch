@@ -4,13 +4,13 @@
  #include "platform/ios/JavaScriptObjCBridge.h"
  #endif
  
--#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
--#include "AgentManager.h"
--#include "autoanysdkbindings.hpp"
--#include "manualanysdkbindings.hpp"
--using namespace anysdk::framework;
--#endif
--
+++#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
++#include "AgentManager.h"
++#include "autoanysdkbindings.hpp"
++#include "manualanysdkbindings.hpp"
++using namespace anysdk::framework;
++#endif
++
  USING_NS_CC;
  using namespace CocosDenshion;
  
@@ -18,10 +18,10 @@
  AppDelegate::~AppDelegate()
  {
      ScriptEngineManager::destroyInstance();
--            
--#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
--    AgentManager::getInstance()->unloadAllPlugins();
--#endif
++            
++#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
++    AgentManager::getInstance()->unloadAllPlugins();
++#endif
  }
  
  void AppDelegate::initGLContextAttrs()
@@ -29,22 +29,22 @@
  
  bool AppDelegate::applicationDidFinishLaunching()
  {
--#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
--    /**
--     * appKey、appSecret、privateKey需要从打包工具中游戏管理界面获取，替换
--     * oauthLoginServer参数是游戏服务提供的用来做登陆验证转发的接口地址。
--     */
--    std::string oauthLoginServer = "OAUTH_LOGIN_SERVER";
--    std::string appKey = "APP_KEY";
--    std::string appSecret = "APP_SERCRET";
--    std::string privateKey = "PRIVATE_KEY";
--    
--    AgentManager* pAgent = AgentManager::getInstance();
--    pAgent->init(appKey,appSecret,privateKey,oauthLoginServer);
--    
--    //使用框架中代理类进行插件初始化
--    pAgent->loadAllPlugins();
--#endif
++#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
++    /**
++     * appKey、appSecret、privateKey需要从打包工具中游戏管理界面获取，替换
++     * oauthLoginServer参数是游戏服务提供的用来做登陆验证转发的接口地址。
++     */
++    std::string oauthLoginServer = "OAUTH_LOGIN_SERVER";
++    std::string appKey = "APP_KEY";
++    std::string appSecret = "APP_SERCRET";
++    std::string privateKey = "PRIVATE_KEY";
++    
++    AgentManager* pAgent = AgentManager::getInstance();
++    pAgent->init(appKey,appSecret,privateKey,oauthLoginServer);
++    
++    //使用框架中代理类进行插件初始化
++    pAgent->loadAllPlugins();
++#endif
      // initialize director
      auto director = Director::getInstance();
  	auto glview = director->getOpenGLView();
@@ -52,11 +52,11 @@
      // sokcet io can be commented out to reduce the package
      sc->addRegisterCallback(register_jsb_socketio);
      
-- #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_IOS)	
--	sc->addRegisterCallback(register_all_autoanysdkbindings);
--    sc->addRegisterCallback(register_all_anysdk_manual);
--#endif  
--    
++ #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID || CC_TARGET_PLATFORM == CC_PLATFORM_IOS)	
++	sc->addRegisterCallback(register_all_autoanysdkbindings);
++    sc->addRegisterCallback(register_all_anysdk_manual);
++#endif  
++    
  #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
      sc->addRegisterCallback(JavascriptJavaBridge::_js_register);
  #elif (CC_TARGET_PLATFORM == CC_PLATFORM_IOS || CC_TARGET_PLATFORM == CC_PLATFORM_MAC)
