@@ -2,19 +2,20 @@
 #include "cocos2d_specifics.hpp"
 #include "js_manual_conversions.h"
 #include "jsb_anysdk_basic_conversions.h"
-#include "AgentManager.h"
-#include "PluginProtocol.h"
-#include "ProtocolPush.h"
-#include "PluginFactory.h"
-#include "ProtocolAds.h"
+#include "mozilla/Maybe.h"
+using namespace anysdk::framework;
 #include "PluginManager.h"
 #include "ProtocolAnalytics.h"
-#include "ProtocolSocial.h"
 #include "ProtocolIAP.h"
+#include "ProtocolAds.h"
+#include "ProtocolShare.h"
+#include "ProtocolSocial.h"
 #include "ProtocolUser.h"
-#include "mozilla/Maybe.h"
-
-using namespace anysdk::framework;
+#include "ProtocolPush.h"
+#include "ProtocolCrash.h"
+#include "ProtocolREC.h"
+#include "ProtocolCustom.h"
+#include "AgentManager.h"
 
 template<class T>
 static bool dummy_constructor(JSContext *cx, uint32_t argc, jsval *vp) {
@@ -58,6 +59,28 @@ static bool js_is_native_obj(JSContext *cx, uint32_t argc, jsval *vp)
 JSClass  *jsb_anysdk_framework_PluginProtocol_class;
 JSObject *jsb_anysdk_framework_PluginProtocol_prototype;
 
+bool js_anysdk_framework_PluginProtocol_isFunctionSupported(JSContext *cx, uint32_t argc, jsval *vp)
+{
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    bool ok = true;
+    JS::RootedObject obj(cx, args.thisv().toObjectOrNull());
+    js_proxy_t *proxy = jsb_get_js_proxy(obj);
+    anysdk::framework::PluginProtocol* cobj = (anysdk::framework::PluginProtocol *)(proxy ? proxy->ptr : NULL);
+    JSB_PRECONDITION2( cobj, cx, false, "js_anysdk_framework_PluginProtocol_isFunctionSupported : Invalid Native Object");
+    if (argc == 1) {
+        std::string arg0;
+        ok &= jsval_to_std_string(cx, args.get(0), &arg0);
+        JSB_PRECONDITION2(ok, cx, false, "js_anysdk_framework_PluginProtocol_isFunctionSupported : Error processing arguments");
+        bool ret = cobj->isFunctionSupported(arg0);
+        jsval jsret = JSVAL_NULL;
+        jsret = BOOLEAN_TO_JSVAL(ret);
+        args.rval().set(jsret);
+        return true;
+    }
+
+    JS_ReportError(cx, "js_anysdk_framework_PluginProtocol_isFunctionSupported : wrong number of arguments: %d, was expecting %d", argc, 1);
+    return false;
+}
 bool js_anysdk_framework_PluginProtocol_getPluginName(JSContext *cx, uint32_t argc, jsval *vp)
 {
     JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
@@ -133,6 +156,7 @@ bool js_anysdk_framework_PluginProtocol_getSDKVersion(JSContext *cx, uint32_t ar
     return false;
 }
 
+
 void js_anysdk_framework_PluginProtocol_finalize(JSFreeOp *fop, JSObject *obj) {
     CCLOGINFO("jsbindings: finalizing JS object %p (PluginProtocol)", obj);
     js_proxy_t* nproxy;
@@ -168,6 +192,7 @@ void js_register_anysdk_framework_PluginProtocol(JSContext *cx, JS::HandleObject
     };
 
     static JSFunctionSpec funcs[] = {
+        JS_FN("isFunctionSupported", js_anysdk_framework_PluginProtocol_isFunctionSupported, 1, JSPROP_PERMANENT | JSPROP_ENUMERATE),
         JS_FN("getPluginName", js_anysdk_framework_PluginProtocol_getPluginName, 0, JSPROP_PERMANENT | JSPROP_ENUMERATE),
         JS_FN("getPluginVersion", js_anysdk_framework_PluginProtocol_getPluginVersion, 0, JSPROP_PERMANENT | JSPROP_ENUMERATE),
         JS_FN("setPluginName", js_anysdk_framework_PluginProtocol_setPluginName, 1, JSPROP_PERMANENT | JSPROP_ENUMERATE),
@@ -491,28 +516,6 @@ void js_register_anysdk_framework_PluginManager(JSContext *cx, JS::HandleObject 
 JSClass  *jsb_anysdk_framework_ProtocolAnalytics_class;
 JSObject *jsb_anysdk_framework_ProtocolAnalytics_prototype;
 
-bool js_anysdk_framework_ProtocolAnalytics_isFunctionSupported(JSContext *cx, uint32_t argc, jsval *vp)
-{
-    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
-    bool ok = true;
-    JS::RootedObject obj(cx, args.thisv().toObjectOrNull());
-    js_proxy_t *proxy = jsb_get_js_proxy(obj);
-    anysdk::framework::ProtocolAnalytics* cobj = (anysdk::framework::ProtocolAnalytics *)(proxy ? proxy->ptr : NULL);
-    JSB_PRECONDITION2( cobj, cx, false, "js_anysdk_framework_ProtocolAnalytics_isFunctionSupported : Invalid Native Object");
-    if (argc == 1) {
-        std::string arg0;
-        ok &= jsval_to_std_string(cx, args.get(0), &arg0);
-        JSB_PRECONDITION2(ok, cx, false, "js_anysdk_framework_ProtocolAnalytics_isFunctionSupported : Error processing arguments");
-        bool ret = cobj->isFunctionSupported(arg0);
-        jsval jsret = JSVAL_NULL;
-        jsret = BOOLEAN_TO_JSVAL(ret);
-        args.rval().set(jsret);
-        return true;
-    }
-
-    JS_ReportError(cx, "js_anysdk_framework_ProtocolAnalytics_isFunctionSupported : wrong number of arguments: %d, was expecting %d", argc, 1);
-    return false;
-}
 bool js_anysdk_framework_ProtocolAnalytics_logTimedEventBegin(JSContext *cx, uint32_t argc, jsval *vp)
 {
     JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
@@ -685,7 +688,6 @@ void js_register_anysdk_framework_ProtocolAnalytics(JSContext *cx, JS::HandleObj
     };
 
     static JSFunctionSpec funcs[] = {
-        JS_FN("isFunctionSupported", js_anysdk_framework_ProtocolAnalytics_isFunctionSupported, 1, JSPROP_PERMANENT | JSPROP_ENUMERATE),
         JS_FN("logTimedEventBegin", js_anysdk_framework_ProtocolAnalytics_logTimedEventBegin, 1, JSPROP_PERMANENT | JSPROP_ENUMERATE),
         JS_FN("logError", js_anysdk_framework_ProtocolAnalytics_logError, 2, JSPROP_PERMANENT | JSPROP_ENUMERATE),
         JS_FN("setCaptureUncaughtException", js_anysdk_framework_ProtocolAnalytics_setCaptureUncaughtException, 1, JSPROP_PERMANENT | JSPROP_ENUMERATE),
@@ -1255,28 +1257,6 @@ void js_register_anysdk_framework_ProtocolSocial(JSContext *cx, JS::HandleObject
 JSClass  *jsb_anysdk_framework_ProtocolUser_class;
 JSObject *jsb_anysdk_framework_ProtocolUser_prototype;
 
-bool js_anysdk_framework_ProtocolUser_isFunctionSupported(JSContext *cx, uint32_t argc, jsval *vp)
-{
-    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
-    bool ok = true;
-    JS::RootedObject obj(cx, args.thisv().toObjectOrNull());
-    js_proxy_t *proxy = jsb_get_js_proxy(obj);
-    anysdk::framework::ProtocolUser* cobj = (anysdk::framework::ProtocolUser *)(proxy ? proxy->ptr : NULL);
-    JSB_PRECONDITION2( cobj, cx, false, "js_anysdk_framework_ProtocolUser_isFunctionSupported : Invalid Native Object");
-    if (argc == 1) {
-        std::string arg0;
-        ok &= jsval_to_std_string(cx, args.get(0), &arg0);
-        JSB_PRECONDITION2(ok, cx, false, "js_anysdk_framework_ProtocolUser_isFunctionSupported : Error processing arguments");
-        bool ret = cobj->isFunctionSupported(arg0);
-        jsval jsret = JSVAL_NULL;
-        jsret = BOOLEAN_TO_JSVAL(ret);
-        args.rval().set(jsret);
-        return true;
-    }
-
-    JS_ReportError(cx, "js_anysdk_framework_ProtocolUser_isFunctionSupported : wrong number of arguments: %d, was expecting %d", argc, 1);
-    return false;
-}
 bool js_anysdk_framework_ProtocolUser_isLogined(JSContext *cx, uint32_t argc, jsval *vp)
 {
     JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
@@ -1416,7 +1396,6 @@ void js_register_anysdk_framework_ProtocolUser(JSContext *cx, JS::HandleObject g
     };
 
     static JSFunctionSpec funcs[] = {
-        JS_FN("isFunctionSupported", js_anysdk_framework_ProtocolUser_isFunctionSupported, 1, JSPROP_PERMANENT | JSPROP_ENUMERATE),
         JS_FN("isLogined", js_anysdk_framework_ProtocolUser_isLogined, 0, JSPROP_PERMANENT | JSPROP_ENUMERATE),
         JS_FN("getUserID", js_anysdk_framework_ProtocolUser_getUserID, 0, JSPROP_PERMANENT | JSPROP_ENUMERATE),
         JS_FN("login", js_anysdk_framework_ProtocolUser_login, 0, JSPROP_PERMANENT | JSPROP_ENUMERATE),
@@ -1604,9 +1583,367 @@ void js_register_anysdk_framework_ProtocolPush(JSContext *cx, JS::HandleObject g
     }
 }
 
+JSClass  *jsb_anysdk_framework_ProtocolCrash_class;
+JSObject *jsb_anysdk_framework_ProtocolCrash_prototype;
+
+bool js_anysdk_framework_ProtocolCrash_setUserIdentifier(JSContext *cx, uint32_t argc, jsval *vp)
+{
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    bool ok = true;
+    JS::RootedObject obj(cx, args.thisv().toObjectOrNull());
+    js_proxy_t *proxy = jsb_get_js_proxy(obj);
+    anysdk::framework::ProtocolCrash* cobj = (anysdk::framework::ProtocolCrash *)(proxy ? proxy->ptr : NULL);
+    JSB_PRECONDITION2( cobj, cx, false, "js_anysdk_framework_ProtocolCrash_setUserIdentifier : Invalid Native Object");
+    if (argc == 1) {
+        const char* arg0;
+        std::string arg0_tmp; ok &= jsval_to_std_string(cx, args.get(0), &arg0_tmp); arg0 = arg0_tmp.c_str();
+        JSB_PRECONDITION2(ok, cx, false, "js_anysdk_framework_ProtocolCrash_setUserIdentifier : Error processing arguments");
+        cobj->setUserIdentifier(arg0);
+        args.rval().setUndefined();
+        return true;
+    }
+
+    JS_ReportError(cx, "js_anysdk_framework_ProtocolCrash_setUserIdentifier : wrong number of arguments: %d, was expecting %d", argc, 1);
+    return false;
+}
+bool js_anysdk_framework_ProtocolCrash_reportException(JSContext *cx, uint32_t argc, jsval *vp)
+{
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    bool ok = true;
+    JS::RootedObject obj(cx, args.thisv().toObjectOrNull());
+    js_proxy_t *proxy = jsb_get_js_proxy(obj);
+    anysdk::framework::ProtocolCrash* cobj = (anysdk::framework::ProtocolCrash *)(proxy ? proxy->ptr : NULL);
+    JSB_PRECONDITION2( cobj, cx, false, "js_anysdk_framework_ProtocolCrash_reportException : Invalid Native Object");
+    if (argc == 2) {
+        const char* arg0;
+        const char* arg1;
+        std::string arg0_tmp; ok &= jsval_to_std_string(cx, args.get(0), &arg0_tmp); arg0 = arg0_tmp.c_str();
+        std::string arg1_tmp; ok &= jsval_to_std_string(cx, args.get(1), &arg1_tmp); arg1 = arg1_tmp.c_str();
+        JSB_PRECONDITION2(ok, cx, false, "js_anysdk_framework_ProtocolCrash_reportException : Error processing arguments");
+        cobj->reportException(arg0, arg1);
+        args.rval().setUndefined();
+        return true;
+    }
+
+    JS_ReportError(cx, "js_anysdk_framework_ProtocolCrash_reportException : wrong number of arguments: %d, was expecting %d", argc, 2);
+    return false;
+}
+bool js_anysdk_framework_ProtocolCrash_leaveBreadcrumb(JSContext *cx, uint32_t argc, jsval *vp)
+{
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    bool ok = true;
+    JS::RootedObject obj(cx, args.thisv().toObjectOrNull());
+    js_proxy_t *proxy = jsb_get_js_proxy(obj);
+    anysdk::framework::ProtocolCrash* cobj = (anysdk::framework::ProtocolCrash *)(proxy ? proxy->ptr : NULL);
+    JSB_PRECONDITION2( cobj, cx, false, "js_anysdk_framework_ProtocolCrash_leaveBreadcrumb : Invalid Native Object");
+    if (argc == 1) {
+        const char* arg0;
+        std::string arg0_tmp; ok &= jsval_to_std_string(cx, args.get(0), &arg0_tmp); arg0 = arg0_tmp.c_str();
+        JSB_PRECONDITION2(ok, cx, false, "js_anysdk_framework_ProtocolCrash_leaveBreadcrumb : Error processing arguments");
+        cobj->leaveBreadcrumb(arg0);
+        args.rval().setUndefined();
+        return true;
+    }
+
+    JS_ReportError(cx, "js_anysdk_framework_ProtocolCrash_leaveBreadcrumb : wrong number of arguments: %d, was expecting %d", argc, 1);
+    return false;
+}
+
+extern JSObject *jsb_anysdk_framework_PluginProtocol_prototype;
+
+void js_anysdk_framework_ProtocolCrash_finalize(JSFreeOp *fop, JSObject *obj) {
+    CCLOGINFO("jsbindings: finalizing JS object %p (ProtocolCrash)", obj);
+    js_proxy_t* nproxy;
+    js_proxy_t* jsproxy;
+    jsproxy = jsb_get_js_proxy(obj);
+    if (jsproxy) {
+        nproxy = jsb_get_native_proxy(jsproxy->ptr);
+
+        anysdk::framework::ProtocolCrash *nobj = static_cast<anysdk::framework::ProtocolCrash *>(nproxy->ptr);
+        if (nobj)
+            delete nobj;
+        
+        jsb_remove_proxy(nproxy, jsproxy);
+    }
+}
+
+void js_register_anysdk_framework_ProtocolCrash(JSContext *cx, JS::HandleObject global) {
+    jsb_anysdk_framework_ProtocolCrash_class = (JSClass *)calloc(1, sizeof(JSClass));
+    jsb_anysdk_framework_ProtocolCrash_class->name = "ProtocolCrash";
+    jsb_anysdk_framework_ProtocolCrash_class->addProperty = JS_PropertyStub;
+    jsb_anysdk_framework_ProtocolCrash_class->delProperty = JS_DeletePropertyStub;
+    jsb_anysdk_framework_ProtocolCrash_class->getProperty = JS_PropertyStub;
+    jsb_anysdk_framework_ProtocolCrash_class->setProperty = JS_StrictPropertyStub;
+    jsb_anysdk_framework_ProtocolCrash_class->enumerate = JS_EnumerateStub;
+    jsb_anysdk_framework_ProtocolCrash_class->resolve = JS_ResolveStub;
+    jsb_anysdk_framework_ProtocolCrash_class->convert = JS_ConvertStub;
+    jsb_anysdk_framework_ProtocolCrash_class->finalize = js_anysdk_framework_ProtocolCrash_finalize;
+    jsb_anysdk_framework_ProtocolCrash_class->flags = JSCLASS_HAS_RESERVED_SLOTS(2);
+
+    static JSPropertySpec properties[] = {
+        JS_PSG("__nativeObj", js_is_native_obj, JSPROP_PERMANENT | JSPROP_ENUMERATE),
+        JS_PS_END
+    };
+
+    static JSFunctionSpec funcs[] = {
+        JS_FN("setUserIdentifier", js_anysdk_framework_ProtocolCrash_setUserIdentifier, 1, JSPROP_PERMANENT | JSPROP_ENUMERATE),
+        JS_FN("reportException", js_anysdk_framework_ProtocolCrash_reportException, 2, JSPROP_PERMANENT | JSPROP_ENUMERATE),
+        JS_FN("leaveBreadcrumb", js_anysdk_framework_ProtocolCrash_leaveBreadcrumb, 1, JSPROP_PERMANENT | JSPROP_ENUMERATE),
+        JS_FS_END
+    };
+
+    JSFunctionSpec *st_funcs = NULL;
+
+    jsb_anysdk_framework_ProtocolCrash_prototype = JS_InitClass(
+        cx, global,
+        JS::RootedObject(cx, jsb_anysdk_framework_PluginProtocol_prototype),
+        jsb_anysdk_framework_ProtocolCrash_class,
+        empty_constructor, 0,
+        properties,
+        funcs,
+        NULL, // no static properties
+        st_funcs);
+    // make the class enumerable in the registered namespace
+//  bool found;
+//FIXME: Removed in Firefox v27 
+//  JS_SetPropertyAttributes(cx, global, "ProtocolCrash", JSPROP_ENUMERATE | JSPROP_READONLY, &found);
+
+    // add the proto and JSClass to the type->js info hash table
+    TypeTest<anysdk::framework::ProtocolCrash> t;
+    js_type_class_t *p;
+    std::string typeName = t.s_name();
+    if (_js_global_type_map.find(typeName) == _js_global_type_map.end())
+    {
+        p = (js_type_class_t *)malloc(sizeof(js_type_class_t));
+        p->jsclass = jsb_anysdk_framework_ProtocolCrash_class;
+        p->proto = jsb_anysdk_framework_ProtocolCrash_prototype;
+        p->parentProto = jsb_anysdk_framework_PluginProtocol_prototype;
+        _js_global_type_map.insert(std::make_pair(typeName, p));
+    }
+}
+
+JSClass  *jsb_anysdk_framework_ProtocolREC_class;
+JSObject *jsb_anysdk_framework_ProtocolREC_prototype;
+
+bool js_anysdk_framework_ProtocolREC_share(JSContext *cx, uint32_t argc, jsval *vp)
+{
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    bool ok = true;
+    JS::RootedObject obj(cx, args.thisv().toObjectOrNull());
+    js_proxy_t *proxy = jsb_get_js_proxy(obj);
+    anysdk::framework::ProtocolREC* cobj = (anysdk::framework::ProtocolREC *)(proxy ? proxy->ptr : NULL);
+    JSB_PRECONDITION2( cobj, cx, false, "js_anysdk_framework_ProtocolREC_share : Invalid Native Object");
+    if (argc == 1) {
+        anysdk::framework::TVideoInfo arg0;
+        ok &= jsval_to_TVideoInfo(cx, args.get(0), &arg0);
+        JSB_PRECONDITION2(ok, cx, false, "js_anysdk_framework_ProtocolREC_share : Error processing arguments");
+        cobj->share(arg0);
+        args.rval().setUndefined();
+        return true;
+    }
+
+    JS_ReportError(cx, "js_anysdk_framework_ProtocolREC_share : wrong number of arguments: %d, was expecting %d", argc, 1);
+    return false;
+}
+bool js_anysdk_framework_ProtocolREC_startRecording(JSContext *cx, uint32_t argc, jsval *vp)
+{
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    JS::RootedObject obj(cx, args.thisv().toObjectOrNull());
+    js_proxy_t *proxy = jsb_get_js_proxy(obj);
+    anysdk::framework::ProtocolREC* cobj = (anysdk::framework::ProtocolREC *)(proxy ? proxy->ptr : NULL);
+    JSB_PRECONDITION2( cobj, cx, false, "js_anysdk_framework_ProtocolREC_startRecording : Invalid Native Object");
+    if (argc == 0) {
+        cobj->startRecording();
+        args.rval().setUndefined();
+        return true;
+    }
+
+    JS_ReportError(cx, "js_anysdk_framework_ProtocolREC_startRecording : wrong number of arguments: %d, was expecting %d", argc, 0);
+    return false;
+}
+bool js_anysdk_framework_ProtocolREC_stopRecording(JSContext *cx, uint32_t argc, jsval *vp)
+{
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    JS::RootedObject obj(cx, args.thisv().toObjectOrNull());
+    js_proxy_t *proxy = jsb_get_js_proxy(obj);
+    anysdk::framework::ProtocolREC* cobj = (anysdk::framework::ProtocolREC *)(proxy ? proxy->ptr : NULL);
+    JSB_PRECONDITION2( cobj, cx, false, "js_anysdk_framework_ProtocolREC_stopRecording : Invalid Native Object");
+    if (argc == 0) {
+        cobj->stopRecording();
+        args.rval().setUndefined();
+        return true;
+    }
+
+    JS_ReportError(cx, "js_anysdk_framework_ProtocolREC_stopRecording : wrong number of arguments: %d, was expecting %d", argc, 0);
+    return false;
+}
+
+extern JSObject *jsb_anysdk_framework_PluginProtocol_prototype;
+
+void js_anysdk_framework_ProtocolREC_finalize(JSFreeOp *fop, JSObject *obj) {
+    CCLOGINFO("jsbindings: finalizing JS object %p (ProtocolREC)", obj);
+    js_proxy_t* nproxy;
+    js_proxy_t* jsproxy;
+    jsproxy = jsb_get_js_proxy(obj);
+    if (jsproxy) {
+        nproxy = jsb_get_native_proxy(jsproxy->ptr);
+
+        anysdk::framework::ProtocolREC *nobj = static_cast<anysdk::framework::ProtocolREC *>(nproxy->ptr);
+        if (nobj)
+            delete nobj;
+        
+        jsb_remove_proxy(nproxy, jsproxy);
+    }
+}
+
+void js_register_anysdk_framework_ProtocolREC(JSContext *cx, JS::HandleObject global) {
+    jsb_anysdk_framework_ProtocolREC_class = (JSClass *)calloc(1, sizeof(JSClass));
+    jsb_anysdk_framework_ProtocolREC_class->name = "ProtocolREC";
+    jsb_anysdk_framework_ProtocolREC_class->addProperty = JS_PropertyStub;
+    jsb_anysdk_framework_ProtocolREC_class->delProperty = JS_DeletePropertyStub;
+    jsb_anysdk_framework_ProtocolREC_class->getProperty = JS_PropertyStub;
+    jsb_anysdk_framework_ProtocolREC_class->setProperty = JS_StrictPropertyStub;
+    jsb_anysdk_framework_ProtocolREC_class->enumerate = JS_EnumerateStub;
+    jsb_anysdk_framework_ProtocolREC_class->resolve = JS_ResolveStub;
+    jsb_anysdk_framework_ProtocolREC_class->convert = JS_ConvertStub;
+    jsb_anysdk_framework_ProtocolREC_class->finalize = js_anysdk_framework_ProtocolREC_finalize;
+    jsb_anysdk_framework_ProtocolREC_class->flags = JSCLASS_HAS_RESERVED_SLOTS(2);
+
+    static JSPropertySpec properties[] = {
+        JS_PSG("__nativeObj", js_is_native_obj, JSPROP_PERMANENT | JSPROP_ENUMERATE),
+        JS_PS_END
+    };
+
+    static JSFunctionSpec funcs[] = {
+        JS_FN("share", js_anysdk_framework_ProtocolREC_share, 1, JSPROP_PERMANENT | JSPROP_ENUMERATE),
+        JS_FN("startRecording", js_anysdk_framework_ProtocolREC_startRecording, 0, JSPROP_PERMANENT | JSPROP_ENUMERATE),
+        JS_FN("stopRecording", js_anysdk_framework_ProtocolREC_stopRecording, 0, JSPROP_PERMANENT | JSPROP_ENUMERATE),
+        JS_FS_END
+    };
+
+    JSFunctionSpec *st_funcs = NULL;
+
+    jsb_anysdk_framework_ProtocolREC_prototype = JS_InitClass(
+        cx, global,
+        JS::RootedObject(cx, jsb_anysdk_framework_PluginProtocol_prototype),
+        jsb_anysdk_framework_ProtocolREC_class,
+        empty_constructor, 0,
+        properties,
+        funcs,
+        NULL, // no static properties
+        st_funcs);
+    // make the class enumerable in the registered namespace
+//  bool found;
+//FIXME: Removed in Firefox v27 
+//  JS_SetPropertyAttributes(cx, global, "ProtocolREC", JSPROP_ENUMERATE | JSPROP_READONLY, &found);
+
+    // add the proto and JSClass to the type->js info hash table
+    TypeTest<anysdk::framework::ProtocolREC> t;
+    js_type_class_t *p;
+    std::string typeName = t.s_name();
+    if (_js_global_type_map.find(typeName) == _js_global_type_map.end())
+    {
+        p = (js_type_class_t *)malloc(sizeof(js_type_class_t));
+        p->jsclass = jsb_anysdk_framework_ProtocolREC_class;
+        p->proto = jsb_anysdk_framework_ProtocolREC_prototype;
+        p->parentProto = jsb_anysdk_framework_PluginProtocol_prototype;
+        _js_global_type_map.insert(std::make_pair(typeName, p));
+    }
+}
+
+JSClass  *jsb_anysdk_framework_ProtocolCustom_class;
+JSObject *jsb_anysdk_framework_ProtocolCustom_prototype;
+
+
+extern JSObject *jsb_anysdk_framework_PluginProtocol_prototype;
+
+void js_anysdk_framework_ProtocolCustom_finalize(JSFreeOp *fop, JSObject *obj) {
+    CCLOGINFO("jsbindings: finalizing JS object %p (ProtocolCustom)", obj);
+    js_proxy_t* nproxy;
+    js_proxy_t* jsproxy;
+    jsproxy = jsb_get_js_proxy(obj);
+    if (jsproxy) {
+        nproxy = jsb_get_native_proxy(jsproxy->ptr);
+
+        anysdk::framework::ProtocolCustom *nobj = static_cast<anysdk::framework::ProtocolCustom *>(nproxy->ptr);
+        if (nobj)
+            delete nobj;
+        
+        jsb_remove_proxy(nproxy, jsproxy);
+    }
+}
+
+void js_register_anysdk_framework_ProtocolCustom(JSContext *cx, JS::HandleObject global) {
+    jsb_anysdk_framework_ProtocolCustom_class = (JSClass *)calloc(1, sizeof(JSClass));
+    jsb_anysdk_framework_ProtocolCustom_class->name = "ProtocolCustom";
+    jsb_anysdk_framework_ProtocolCustom_class->addProperty = JS_PropertyStub;
+    jsb_anysdk_framework_ProtocolCustom_class->delProperty = JS_DeletePropertyStub;
+    jsb_anysdk_framework_ProtocolCustom_class->getProperty = JS_PropertyStub;
+    jsb_anysdk_framework_ProtocolCustom_class->setProperty = JS_StrictPropertyStub;
+    jsb_anysdk_framework_ProtocolCustom_class->enumerate = JS_EnumerateStub;
+    jsb_anysdk_framework_ProtocolCustom_class->resolve = JS_ResolveStub;
+    jsb_anysdk_framework_ProtocolCustom_class->convert = JS_ConvertStub;
+    jsb_anysdk_framework_ProtocolCustom_class->finalize = js_anysdk_framework_ProtocolCustom_finalize;
+    jsb_anysdk_framework_ProtocolCustom_class->flags = JSCLASS_HAS_RESERVED_SLOTS(2);
+
+    static JSPropertySpec properties[] = {
+        JS_PSG("__nativeObj", js_is_native_obj, JSPROP_PERMANENT | JSPROP_ENUMERATE),
+        JS_PS_END
+    };
+
+    static JSFunctionSpec funcs[] = {
+        JS_FS_END
+    };
+
+    JSFunctionSpec *st_funcs = NULL;
+
+    jsb_anysdk_framework_ProtocolCustom_prototype = JS_InitClass(
+        cx, global,
+        JS::RootedObject(cx, jsb_anysdk_framework_PluginProtocol_prototype),
+        jsb_anysdk_framework_ProtocolCustom_class,
+        empty_constructor, 0,
+        properties,
+        funcs,
+        NULL, // no static properties
+        st_funcs);
+    // make the class enumerable in the registered namespace
+//  bool found;
+//FIXME: Removed in Firefox v27 
+//  JS_SetPropertyAttributes(cx, global, "ProtocolCustom", JSPROP_ENUMERATE | JSPROP_READONLY, &found);
+
+    // add the proto and JSClass to the type->js info hash table
+    TypeTest<anysdk::framework::ProtocolCustom> t;
+    js_type_class_t *p;
+    std::string typeName = t.s_name();
+    if (_js_global_type_map.find(typeName) == _js_global_type_map.end())
+    {
+        p = (js_type_class_t *)malloc(sizeof(js_type_class_t));
+        p->jsclass = jsb_anysdk_framework_ProtocolCustom_class;
+        p->proto = jsb_anysdk_framework_ProtocolCustom_prototype;
+        p->parentProto = jsb_anysdk_framework_PluginProtocol_prototype;
+        _js_global_type_map.insert(std::make_pair(typeName, p));
+    }
+}
+
 JSClass  *jsb_anysdk_framework_AgentManager_class;
 JSObject *jsb_anysdk_framework_AgentManager_prototype;
 
+bool js_anysdk_framework_AgentManager_unloadAllPlugins(JSContext *cx, uint32_t argc, jsval *vp)
+{
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    JS::RootedObject obj(cx, args.thisv().toObjectOrNull());
+    js_proxy_t *proxy = jsb_get_js_proxy(obj);
+    anysdk::framework::AgentManager* cobj = (anysdk::framework::AgentManager *)(proxy ? proxy->ptr : NULL);
+    JSB_PRECONDITION2( cobj, cx, false, "js_anysdk_framework_AgentManager_unloadAllPlugins : Invalid Native Object");
+    if (argc == 0) {
+        cobj->unloadAllPlugins();
+        args.rval().setUndefined();
+        return true;
+    }
+
+    JS_ReportError(cx, "js_anysdk_framework_AgentManager_unloadAllPlugins : wrong number of arguments: %d, was expecting %d", argc, 0);
+    return false;
+}
 bool js_anysdk_framework_AgentManager_getSocialPlugin(JSContext *cx, uint32_t argc, jsval *vp)
 {
     JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
@@ -1632,74 +1969,29 @@ bool js_anysdk_framework_AgentManager_getSocialPlugin(JSContext *cx, uint32_t ar
     JS_ReportError(cx, "js_anysdk_framework_AgentManager_getSocialPlugin : wrong number of arguments: %d, was expecting %d", argc, 0);
     return false;
 }
-bool js_anysdk_framework_AgentManager_unloadAllPlugins(JSContext *cx, uint32_t argc, jsval *vp)
+bool js_anysdk_framework_AgentManager_getPushPlugin(JSContext *cx, uint32_t argc, jsval *vp)
 {
     JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
     JS::RootedObject obj(cx, args.thisv().toObjectOrNull());
     js_proxy_t *proxy = jsb_get_js_proxy(obj);
     anysdk::framework::AgentManager* cobj = (anysdk::framework::AgentManager *)(proxy ? proxy->ptr : NULL);
-    JSB_PRECONDITION2( cobj, cx, false, "js_anysdk_framework_AgentManager_unloadAllPlugins : Invalid Native Object");
+    JSB_PRECONDITION2( cobj, cx, false, "js_anysdk_framework_AgentManager_getPushPlugin : Invalid Native Object");
     if (argc == 0) {
-        cobj->unloadAllPlugins();
-        args.rval().setUndefined();
-        return true;
-    }
-
-    JS_ReportError(cx, "js_anysdk_framework_AgentManager_unloadAllPlugins : wrong number of arguments: %d, was expecting %d", argc, 0);
-    return false;
-}
-bool js_anysdk_framework_AgentManager_loadAllPlugins(JSContext *cx, uint32_t argc, jsval *vp)
-{
-    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
-    JS::RootedObject obj(cx, args.thisv().toObjectOrNull());
-    js_proxy_t *proxy = jsb_get_js_proxy(obj);
-    anysdk::framework::AgentManager* cobj = (anysdk::framework::AgentManager *)(proxy ? proxy->ptr : NULL);
-    JSB_PRECONDITION2( cobj, cx, false, "js_anysdk_framework_AgentManager_loadAllPlugins : Invalid Native Object");
-    if (argc == 0) {
-        cobj->loadAllPlugins();
-        args.rval().setUndefined();
-        return true;
-    }
-
-    JS_ReportError(cx, "js_anysdk_framework_AgentManager_loadAllPlugins : wrong number of arguments: %d, was expecting %d", argc, 0);
-    return false;
-}
-bool js_anysdk_framework_AgentManager_getCustomParam(JSContext *cx, uint32_t argc, jsval *vp)
-{
-    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
-    JS::RootedObject obj(cx, args.thisv().toObjectOrNull());
-    js_proxy_t *proxy = jsb_get_js_proxy(obj);
-    anysdk::framework::AgentManager* cobj = (anysdk::framework::AgentManager *)(proxy ? proxy->ptr : NULL);
-    JSB_PRECONDITION2( cobj, cx, false, "js_anysdk_framework_AgentManager_getCustomParam : Invalid Native Object");
-    if (argc == 0) {
-        std::string ret = cobj->getCustomParam();
+        anysdk::framework::ProtocolPush* ret = cobj->getPushPlugin();
         jsval jsret = JSVAL_NULL;
-        jsret = std_string_to_jsval(cx, ret);
+        do {
+			if (ret) {
+				js_proxy_t *proxy = js_get_or_create_proxy<anysdk::framework::ProtocolPush>(cx, ret);
+				jsret = OBJECT_TO_JSVAL(proxy->obj);
+			} else {
+				jsret = JSVAL_NULL;
+			}
+		} while (0);
         args.rval().set(jsret);
         return true;
     }
 
-    JS_ReportError(cx, "js_anysdk_framework_AgentManager_getCustomParam : wrong number of arguments: %d, was expecting %d", argc, 0);
-    return false;
-}
-bool js_anysdk_framework_AgentManager_setIsAnaylticsEnabled(JSContext *cx, uint32_t argc, jsval *vp)
-{
-    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
-    bool ok = true;
-    JS::RootedObject obj(cx, args.thisv().toObjectOrNull());
-    js_proxy_t *proxy = jsb_get_js_proxy(obj);
-    anysdk::framework::AgentManager* cobj = (anysdk::framework::AgentManager *)(proxy ? proxy->ptr : NULL);
-    JSB_PRECONDITION2( cobj, cx, false, "js_anysdk_framework_AgentManager_setIsAnaylticsEnabled : Invalid Native Object");
-    if (argc == 1) {
-        bool arg0;
-        arg0 = JS::ToBoolean(args.get(0));
-        JSB_PRECONDITION2(ok, cx, false, "js_anysdk_framework_AgentManager_setIsAnaylticsEnabled : Error processing arguments");
-        cobj->setIsAnaylticsEnabled(arg0);
-        args.rval().setUndefined();
-        return true;
-    }
-
-    JS_ReportError(cx, "js_anysdk_framework_AgentManager_setIsAnaylticsEnabled : wrong number of arguments: %d, was expecting %d", argc, 1);
+    JS_ReportError(cx, "js_anysdk_framework_AgentManager_getPushPlugin : wrong number of arguments: %d, was expecting %d", argc, 0);
     return false;
 }
 bool js_anysdk_framework_AgentManager_getUserPlugin(JSContext *cx, uint32_t argc, jsval *vp)
@@ -1725,6 +2017,65 @@ bool js_anysdk_framework_AgentManager_getUserPlugin(JSContext *cx, uint32_t argc
     }
 
     JS_ReportError(cx, "js_anysdk_framework_AgentManager_getUserPlugin : wrong number of arguments: %d, was expecting %d", argc, 0);
+    return false;
+}
+bool js_anysdk_framework_AgentManager_getCustomPlugin(JSContext *cx, uint32_t argc, jsval *vp)
+{
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    JS::RootedObject obj(cx, args.thisv().toObjectOrNull());
+    js_proxy_t *proxy = jsb_get_js_proxy(obj);
+    anysdk::framework::AgentManager* cobj = (anysdk::framework::AgentManager *)(proxy ? proxy->ptr : NULL);
+    JSB_PRECONDITION2( cobj, cx, false, "js_anysdk_framework_AgentManager_getCustomPlugin : Invalid Native Object");
+    if (argc == 0) {
+        anysdk::framework::ProtocolCustom* ret = cobj->getCustomPlugin();
+        jsval jsret = JSVAL_NULL;
+        do {
+			if (ret) {
+				js_proxy_t *proxy = js_get_or_create_proxy<anysdk::framework::ProtocolCustom>(cx, ret);
+				jsret = OBJECT_TO_JSVAL(proxy->obj);
+			} else {
+				jsret = JSVAL_NULL;
+			}
+		} while (0);
+        args.rval().set(jsret);
+        return true;
+    }
+
+    JS_ReportError(cx, "js_anysdk_framework_AgentManager_getCustomPlugin : wrong number of arguments: %d, was expecting %d", argc, 0);
+    return false;
+}
+bool js_anysdk_framework_AgentManager_getCustomParam(JSContext *cx, uint32_t argc, jsval *vp)
+{
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    JS::RootedObject obj(cx, args.thisv().toObjectOrNull());
+    js_proxy_t *proxy = jsb_get_js_proxy(obj);
+    anysdk::framework::AgentManager* cobj = (anysdk::framework::AgentManager *)(proxy ? proxy->ptr : NULL);
+    JSB_PRECONDITION2( cobj, cx, false, "js_anysdk_framework_AgentManager_getCustomParam : Invalid Native Object");
+    if (argc == 0) {
+        std::string ret = cobj->getCustomParam();
+        jsval jsret = JSVAL_NULL;
+        jsret = std_string_to_jsval(cx, ret);
+        args.rval().set(jsret);
+        return true;
+    }
+
+    JS_ReportError(cx, "js_anysdk_framework_AgentManager_getCustomParam : wrong number of arguments: %d, was expecting %d", argc, 0);
+    return false;
+}
+bool js_anysdk_framework_AgentManager_loadAllPlugins(JSContext *cx, uint32_t argc, jsval *vp)
+{
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    JS::RootedObject obj(cx, args.thisv().toObjectOrNull());
+    js_proxy_t *proxy = jsb_get_js_proxy(obj);
+    anysdk::framework::AgentManager* cobj = (anysdk::framework::AgentManager *)(proxy ? proxy->ptr : NULL);
+    JSB_PRECONDITION2( cobj, cx, false, "js_anysdk_framework_AgentManager_loadAllPlugins : Invalid Native Object");
+    if (argc == 0) {
+        cobj->loadAllPlugins();
+        args.rval().setUndefined();
+        return true;
+    }
+
+    JS_ReportError(cx, "js_anysdk_framework_AgentManager_loadAllPlugins : wrong number of arguments: %d, was expecting %d", argc, 0);
     return false;
 }
 bool js_anysdk_framework_AgentManager_init(JSContext *cx, uint32_t argc, jsval *vp)
@@ -1771,6 +2122,24 @@ bool js_anysdk_framework_AgentManager_isAnaylticsEnabled(JSContext *cx, uint32_t
     JS_ReportError(cx, "js_anysdk_framework_AgentManager_isAnaylticsEnabled : wrong number of arguments: %d, was expecting %d", argc, 0);
     return false;
 }
+bool js_anysdk_framework_AgentManager_getChannelId(JSContext *cx, uint32_t argc, jsval *vp)
+{
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    JS::RootedObject obj(cx, args.thisv().toObjectOrNull());
+    js_proxy_t *proxy = jsb_get_js_proxy(obj);
+    anysdk::framework::AgentManager* cobj = (anysdk::framework::AgentManager *)(proxy ? proxy->ptr : NULL);
+    JSB_PRECONDITION2( cobj, cx, false, "js_anysdk_framework_AgentManager_getChannelId : Invalid Native Object");
+    if (argc == 0) {
+        std::string ret = cobj->getChannelId();
+        jsval jsret = JSVAL_NULL;
+        jsret = std_string_to_jsval(cx, ret);
+        args.rval().set(jsret);
+        return true;
+    }
+
+    JS_ReportError(cx, "js_anysdk_framework_AgentManager_getChannelId : wrong number of arguments: %d, was expecting %d", argc, 0);
+    return false;
+}
 bool js_anysdk_framework_AgentManager_getAdsPlugin(JSContext *cx, uint32_t argc, jsval *vp)
 {
     JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
@@ -1796,29 +2165,24 @@ bool js_anysdk_framework_AgentManager_getAdsPlugin(JSContext *cx, uint32_t argc,
     JS_ReportError(cx, "js_anysdk_framework_AgentManager_getAdsPlugin : wrong number of arguments: %d, was expecting %d", argc, 0);
     return false;
 }
-bool js_anysdk_framework_AgentManager_getPushPlugin(JSContext *cx, uint32_t argc, jsval *vp)
+bool js_anysdk_framework_AgentManager_setIsAnaylticsEnabled(JSContext *cx, uint32_t argc, jsval *vp)
 {
     JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    bool ok = true;
     JS::RootedObject obj(cx, args.thisv().toObjectOrNull());
     js_proxy_t *proxy = jsb_get_js_proxy(obj);
     anysdk::framework::AgentManager* cobj = (anysdk::framework::AgentManager *)(proxy ? proxy->ptr : NULL);
-    JSB_PRECONDITION2( cobj, cx, false, "js_anysdk_framework_AgentManager_getPushPlugin : Invalid Native Object");
-    if (argc == 0) {
-        anysdk::framework::ProtocolPush* ret = cobj->getPushPlugin();
-        jsval jsret = JSVAL_NULL;
-        do {
-			if (ret) {
-				js_proxy_t *proxy = js_get_or_create_proxy<anysdk::framework::ProtocolPush>(cx, ret);
-				jsret = OBJECT_TO_JSVAL(proxy->obj);
-			} else {
-				jsret = JSVAL_NULL;
-			}
-		} while (0);
-        args.rval().set(jsret);
+    JSB_PRECONDITION2( cobj, cx, false, "js_anysdk_framework_AgentManager_setIsAnaylticsEnabled : Invalid Native Object");
+    if (argc == 1) {
+        bool arg0;
+        arg0 = JS::ToBoolean(args.get(0));
+        JSB_PRECONDITION2(ok, cx, false, "js_anysdk_framework_AgentManager_setIsAnaylticsEnabled : Error processing arguments");
+        cobj->setIsAnaylticsEnabled(arg0);
+        args.rval().setUndefined();
         return true;
     }
 
-    JS_ReportError(cx, "js_anysdk_framework_AgentManager_getPushPlugin : wrong number of arguments: %d, was expecting %d", argc, 0);
+    JS_ReportError(cx, "js_anysdk_framework_AgentManager_setIsAnaylticsEnabled : wrong number of arguments: %d, was expecting %d", argc, 1);
     return false;
 }
 bool js_anysdk_framework_AgentManager_getSharePlugin(JSContext *cx, uint32_t argc, jsval *vp)
@@ -1871,22 +2235,54 @@ bool js_anysdk_framework_AgentManager_getAnalyticsPlugin(JSContext *cx, uint32_t
     JS_ReportError(cx, "js_anysdk_framework_AgentManager_getAnalyticsPlugin : wrong number of arguments: %d, was expecting %d", argc, 0);
     return false;
 }
-bool js_anysdk_framework_AgentManager_getChannelId(JSContext *cx, uint32_t argc, jsval *vp)
+bool js_anysdk_framework_AgentManager_getRECPlugin(JSContext *cx, uint32_t argc, jsval *vp)
 {
     JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
     JS::RootedObject obj(cx, args.thisv().toObjectOrNull());
     js_proxy_t *proxy = jsb_get_js_proxy(obj);
     anysdk::framework::AgentManager* cobj = (anysdk::framework::AgentManager *)(proxy ? proxy->ptr : NULL);
-    JSB_PRECONDITION2( cobj, cx, false, "js_anysdk_framework_AgentManager_getChannelId : Invalid Native Object");
+    JSB_PRECONDITION2( cobj, cx, false, "js_anysdk_framework_AgentManager_getRECPlugin : Invalid Native Object");
     if (argc == 0) {
-        std::string ret = cobj->getChannelId();
+        anysdk::framework::ProtocolREC* ret = cobj->getRECPlugin();
         jsval jsret = JSVAL_NULL;
-        jsret = std_string_to_jsval(cx, ret);
+        do {
+			if (ret) {
+				js_proxy_t *proxy = js_get_or_create_proxy<anysdk::framework::ProtocolREC>(cx, ret);
+				jsret = OBJECT_TO_JSVAL(proxy->obj);
+			} else {
+				jsret = JSVAL_NULL;
+			}
+		} while (0);
         args.rval().set(jsret);
         return true;
     }
 
-    JS_ReportError(cx, "js_anysdk_framework_AgentManager_getChannelId : wrong number of arguments: %d, was expecting %d", argc, 0);
+    JS_ReportError(cx, "js_anysdk_framework_AgentManager_getRECPlugin : wrong number of arguments: %d, was expecting %d", argc, 0);
+    return false;
+}
+bool js_anysdk_framework_AgentManager_getCrashPlugin(JSContext *cx, uint32_t argc, jsval *vp)
+{
+    JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
+    JS::RootedObject obj(cx, args.thisv().toObjectOrNull());
+    js_proxy_t *proxy = jsb_get_js_proxy(obj);
+    anysdk::framework::AgentManager* cobj = (anysdk::framework::AgentManager *)(proxy ? proxy->ptr : NULL);
+    JSB_PRECONDITION2( cobj, cx, false, "js_anysdk_framework_AgentManager_getCrashPlugin : Invalid Native Object");
+    if (argc == 0) {
+        anysdk::framework::ProtocolCrash* ret = cobj->getCrashPlugin();
+        jsval jsret = JSVAL_NULL;
+        do {
+			if (ret) {
+				js_proxy_t *proxy = js_get_or_create_proxy<anysdk::framework::ProtocolCrash>(cx, ret);
+				jsret = OBJECT_TO_JSVAL(proxy->obj);
+			} else {
+				jsret = JSVAL_NULL;
+			}
+		} while (0);
+        args.rval().set(jsret);
+        return true;
+    }
+
+    JS_ReportError(cx, "js_anysdk_framework_AgentManager_getCrashPlugin : wrong number of arguments: %d, was expecting %d", argc, 0);
     return false;
 }
 bool js_anysdk_framework_AgentManager_end(JSContext *cx, uint32_t argc, jsval *vp)
@@ -1959,19 +2355,22 @@ void js_register_anysdk_framework_AgentManager(JSContext *cx, JS::HandleObject g
     };
 
     static JSFunctionSpec funcs[] = {
-        JS_FN("getSocialPlugin", js_anysdk_framework_AgentManager_getSocialPlugin, 0, JSPROP_PERMANENT | JSPROP_ENUMERATE),
         JS_FN("unloadAllPlugins", js_anysdk_framework_AgentManager_unloadAllPlugins, 0, JSPROP_PERMANENT | JSPROP_ENUMERATE),
-        JS_FN("loadAllPlugins", js_anysdk_framework_AgentManager_loadAllPlugins, 0, JSPROP_PERMANENT | JSPROP_ENUMERATE),
-        JS_FN("getCustomParam", js_anysdk_framework_AgentManager_getCustomParam, 0, JSPROP_PERMANENT | JSPROP_ENUMERATE),
-        JS_FN("setIsAnaylticsEnabled", js_anysdk_framework_AgentManager_setIsAnaylticsEnabled, 1, JSPROP_PERMANENT | JSPROP_ENUMERATE),
+        JS_FN("getSocialPlugin", js_anysdk_framework_AgentManager_getSocialPlugin, 0, JSPROP_PERMANENT | JSPROP_ENUMERATE),
+        JS_FN("getPushPlugin", js_anysdk_framework_AgentManager_getPushPlugin, 0, JSPROP_PERMANENT | JSPROP_ENUMERATE),
         JS_FN("getUserPlugin", js_anysdk_framework_AgentManager_getUserPlugin, 0, JSPROP_PERMANENT | JSPROP_ENUMERATE),
+        JS_FN("getCustomPlugin", js_anysdk_framework_AgentManager_getCustomPlugin, 0, JSPROP_PERMANENT | JSPROP_ENUMERATE),
+        JS_FN("getCustomParam", js_anysdk_framework_AgentManager_getCustomParam, 0, JSPROP_PERMANENT | JSPROP_ENUMERATE),
+        JS_FN("loadAllPlugins", js_anysdk_framework_AgentManager_loadAllPlugins, 0, JSPROP_PERMANENT | JSPROP_ENUMERATE),
         JS_FN("init", js_anysdk_framework_AgentManager_init, 4, JSPROP_PERMANENT | JSPROP_ENUMERATE),
         JS_FN("isAnaylticsEnabled", js_anysdk_framework_AgentManager_isAnaylticsEnabled, 0, JSPROP_PERMANENT | JSPROP_ENUMERATE),
+        JS_FN("getChannelId", js_anysdk_framework_AgentManager_getChannelId, 0, JSPROP_PERMANENT | JSPROP_ENUMERATE),
         JS_FN("getAdsPlugin", js_anysdk_framework_AgentManager_getAdsPlugin, 0, JSPROP_PERMANENT | JSPROP_ENUMERATE),
-        JS_FN("getPushPlugin", js_anysdk_framework_AgentManager_getPushPlugin, 0, JSPROP_PERMANENT | JSPROP_ENUMERATE),
+        JS_FN("setIsAnaylticsEnabled", js_anysdk_framework_AgentManager_setIsAnaylticsEnabled, 1, JSPROP_PERMANENT | JSPROP_ENUMERATE),
         JS_FN("getSharePlugin", js_anysdk_framework_AgentManager_getSharePlugin, 0, JSPROP_PERMANENT | JSPROP_ENUMERATE),
         JS_FN("getAnalyticsPlugin", js_anysdk_framework_AgentManager_getAnalyticsPlugin, 0, JSPROP_PERMANENT | JSPROP_ENUMERATE),
-        JS_FN("getChannelId", js_anysdk_framework_AgentManager_getChannelId, 0, JSPROP_PERMANENT | JSPROP_ENUMERATE),
+        JS_FN("getRECPlugin", js_anysdk_framework_AgentManager_getRECPlugin, 0, JSPROP_PERMANENT | JSPROP_ENUMERATE),
+        JS_FN("getCrashPlugin", js_anysdk_framework_AgentManager_getCrashPlugin, 0, JSPROP_PERMANENT | JSPROP_ENUMERATE),
         JS_FS_END
     };
 
@@ -2015,6 +2414,7 @@ void register_all_anysdk_framework(JSContext* cx, JS::HandleObject obj) {
     get_or_create_js_obj(cx, obj, "anysdk", &ns);
 
     js_register_anysdk_framework_PluginProtocol(cx, ns);
+    js_register_anysdk_framework_ProtocolCustom(cx, ns);
     js_register_anysdk_framework_ProtocolUser(cx, ns);
     js_register_anysdk_framework_PluginFactory(cx, ns);
     js_register_anysdk_framework_ProtocolIAP(cx, ns);
@@ -2022,7 +2422,9 @@ void register_all_anysdk_framework(JSContext* cx, JS::HandleObject obj) {
     js_register_anysdk_framework_ProtocolSocial(cx, ns);
     js_register_anysdk_framework_ProtocolAnalytics(cx, ns);
     js_register_anysdk_framework_ProtocolAds(cx, ns);
+    js_register_anysdk_framework_ProtocolCrash(cx, ns);
     js_register_anysdk_framework_PluginManager(cx, ns);
     js_register_anysdk_framework_ProtocolPush(cx, ns);
+    js_register_anysdk_framework_ProtocolREC(cx, ns);
 }
 

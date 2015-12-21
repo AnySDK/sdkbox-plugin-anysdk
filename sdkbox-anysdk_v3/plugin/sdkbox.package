@@ -12,7 +12,7 @@ if COCOS_ENGINE_TYPE == 'prebuilt':
     sdkbox.copy_files('protocols/android/libPluginProtocol.jar', ANDROID_PROJECT_DIR, ANDROID_PROJECT_DIR + 'jars/')
 else:
     sdkbox.copy_files('protocols/android/libPluginProtocol.jar', ANDROID_PROJECT_DIR, ANDROID_PROJECT_DIR + 'libs/')
-sdkbox.copy_files(['protocols/res/drawable/btn_close.png', 'protocols/res/drawable/ui_ad.png'], ANDROID_PROJECT_DIR, ANDROID_PROJECT_DIR + 'res/drawable/')
+sdkbox.copy_files(['protocols/res/drawable/plugin_btn_close.png', 'protocols/res/drawable/plugin_ui_ad.png'], ANDROID_PROJECT_DIR, ANDROID_PROJECT_DIR + 'res/drawable/')
 sdkbox.copy_files('protocols/res/values-en/plugin_string.xml', ANDROID_PROJECT_DIR, ANDROID_PROJECT_DIR + 'res/values-en/')
 sdkbox.copy_files('protocols/res/values/plugin_string.xml', ANDROID_PROJECT_DIR, ANDROID_PROJECT_DIR + 'res/values/')
 sdkbox.copy_files(['protocols/res/layout/plugin_ads.xml', 'protocols/res/layout/plugin_login.xml'], ANDROID_PROJECT_DIR, ANDROID_PROJECT_DIR + 'res/layout/')
@@ -67,7 +67,7 @@ if COCOS_PROJECT_TYPE == 'js':
         sdkbox.android_add_sources(android_js_sources)
         sdkbox.xcode_add_sources(ios_js_sources)
 
-    if sdkbox.satisfies_cocos_version('3.5'):
+    if sdkbox.satisfies_cocos_version('3.5', '3.9'):
         sdkbox.copy_files(['jsbindings/3.5/jsb_anysdk_basic_conversions.cpp', 'jsbindings/3.5/jsb_anysdk_basic_conversions.h', 'jsbindings/3.5/manualanysdkbindings.cpp', 'jsbindings/3.5/manualanysdkbindings.hpp', 'jsbindings/3.5/jsb_anysdk_protocols_auto.cpp', 'jsbindings/3.5/jsb_anysdk_protocols_auto.hpp'], PLUGIN_PATH, COCOS_CLASSES_DIR)
         android_js_sources = ['../../Classes/jsb_anysdk_basic_conversions.cpp', '../../Classes/manualanysdkbindings.cpp', '../../Classes/jsb_anysdk_protocols_auto.cpp']
         ios_js_sources = ['jsb_anysdk_basic_conversions.cpp', 'manualanysdkbindings.cpp', 'jsb_anysdk_protocols_auto.cpp']
@@ -75,7 +75,16 @@ if COCOS_PROJECT_TYPE == 'js':
             sdkbox.xcode_add_sources(ios_js_sources)
         sdkbox.android_add_sources(android_js_sources)
 
-    sdkbox.copy_files('jsbindings/anysdkConst.js', PLUGIN_PATH, COCOS_PROJECT_DIR + 'src/')
+    if sdkbox.satisfies_cocos_version('3.10'):
+        sdkbox.copy_files(['jsbindings/3.10/jsb_anysdk_basic_conversions.cpp', 'jsbindings/3.10/jsb_anysdk_basic_conversions.h', 'jsbindings/3.10/manualanysdkbindings.cpp', 'jsbindings/3.10/manualanysdkbindings.hpp', 'jsbindings/3.10/jsb_anysdk_protocols_auto.cpp', 'jsbindings/3.10/jsb_anysdk_protocols_auto.hpp'], PLUGIN_PATH, COCOS_CLASSES_DIR)
+        android_js_sources = ['../../Classes/jsb_anysdk_basic_conversions.cpp', '../../Classes/manualanysdkbindings.cpp', '../../Classes/jsb_anysdk_protocols_auto.cpp']
+        ios_js_sources = ['jsb_anysdk_basic_conversions.cpp', 'manualanysdkbindings.cpp', 'jsb_anysdk_protocols_auto.cpp']
+        if IOS_PROJECT_DIR != 'n/a':
+            sdkbox.xcode_add_sources(ios_js_sources)
+        sdkbox.android_add_sources(android_js_sources)
+
+    sdkbox.copy_files('jsbindings/jsb_anysdk_constants.js', PLUGIN_PATH, COCOS_PROJECT_DIR + 'src/')
+    sdkbox.copy_files('jsbindings/jsb_anysdk.js', PLUGIN_PATH, COCOS_PROJECT_DIR + 'src/')
 
     if sdkbox.satisfies_cocos_version('3.0','3.0'):
         sdkbox.apply_patch(COCOS_CLASSES_DIR + 'AppDelegate.cpp', 'AppDelegate.js3.0.patch', root=COCOS_CLASSES_DIR)
@@ -98,8 +107,8 @@ if COCOS_PROJECT_TYPE == 'js':
             sdkbox.apply_patch(COCOS_CLASSES_DIR + 'AppDelegate.cpp', 'AppDelegate.js3.8.patch', root=COCOS_CLASSES_DIR)
 
 
-    if sdkbox.satisfies_cocos_version('3.8'):
-        if COCOS_ENGINE_TYPE == 'prebuilt':
+    if COCOS_ENGINE_TYPE == 'prebuilt':
+        if sdkbox.satisfies_cocos_version('3.8'):
             sdkbox.apply_patch(ANDROID_ACTIVITY_PATH + ANDROID_ACTIVITY_NAME + '.java', 'AppActivity.js3.9prebuilt.patch', root=ANDROID_ACTIVITY_PATH)
     else:
         sdkbox.apply_patch(ANDROID_ACTIVITY_PATH + ANDROID_ACTIVITY_NAME + '.java', 'AppActivity.js.patch', root=ANDROID_ACTIVITY_PATH)
@@ -107,6 +116,8 @@ if COCOS_PROJECT_TYPE == 'js':
     if sdkbox.satisfies_cocos_version('3.8'):
         if COCOS_ENGINE_TYPE == 'prebuilt':
             sdkbox.apply_patch(ANDROID_JNI_DIR + 'hellojavascript/main.cpp', 'main.js3.9prebuilt.patch', root=ANDROID_JNI_DIR + 'hellojavascript/')
+        else: 
+            sdkbox.apply_patch(ANDROID_JNI_DIR + 'hellojavascript/main.cpp', 'main.cpp3.7.patch', root=ANDROID_JNI_DIR + 'hellojavascript/')
     elif sdkbox.satisfies_cocos_version('3.7'):
         sdkbox.apply_patch(ANDROID_JNI_DIR + 'hellojavascript/main.cpp', 'main.cpp3.7.patch', root=ANDROID_JNI_DIR + 'hellojavascript/')
     elif sdkbox.satisfies_cocos_version('3.1','3.6'):
@@ -146,8 +157,8 @@ if COCOS_PROJECT_TYPE == 'lua':
     elif sdkbox.satisfies_cocos_version('3.8'):
         sdkbox.apply_patch(COCOS_CLASSES_DIR + 'AppDelegate.cpp', 'AppDelegate.lua3.8.patch', root=COCOS_CLASSES_DIR)
 
-    if sdkbox.satisfies_cocos_version('3.8'):
-        if COCOS_ENGINE_TYPE == 'prebuilt':
+    if COCOS_ENGINE_TYPE == 'prebuilt':
+        if sdkbox.satisfies_cocos_version('3.8'):
                 sdkbox.apply_patch(ANDROID_ACTIVITY_PATH + ANDROID_ACTIVITY_NAME + '.java', 'AppActivity.lua3.9prebuilt.patch', root=ANDROID_ACTIVITY_PATH)
     else:
         sdkbox.apply_patch(ANDROID_ACTIVITY_PATH + ANDROID_ACTIVITY_NAME + '.java', 'AppActivity.lua.patch', root=ANDROID_ACTIVITY_PATH)
