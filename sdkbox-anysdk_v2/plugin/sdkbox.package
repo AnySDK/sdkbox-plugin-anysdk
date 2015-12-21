@@ -9,7 +9,7 @@ if sdkbox.android_has_key_value(sdkbox.APPLICATION, 'APP_STL', 'stlport_static')
     sdkbox.copy_files('android/protocols_stlport_static', PLUGIN_PATH, ANDROID_PROJECT_DIR,{'protocols_stlport_static':'protocols'})
 
 sdkbox.copy_files('protocols/android/libPluginProtocol.jar', ANDROID_PROJECT_DIR, ANDROID_PROJECT_DIR + 'libs/')
-sdkbox.copy_files(['protocols/res/drawable/btn_close.png', 'protocols/res/drawable/ui_ad.png'], ANDROID_PROJECT_DIR, ANDROID_PROJECT_DIR + 'res/drawable/')
+sdkbox.copy_files(['protocols/res/drawable/plugin_btn_close.png', 'protocols/res/drawable/plugin_ui_ad.png'], ANDROID_PROJECT_DIR, ANDROID_PROJECT_DIR + 'res/drawable/')
 sdkbox.copy_files('protocols/res/values-en/plugin_string.xml', ANDROID_PROJECT_DIR, ANDROID_PROJECT_DIR + 'res/values-en/')
 sdkbox.copy_files('protocols/res/values/plugin_string.xml', ANDROID_PROJECT_DIR, ANDROID_PROJECT_DIR + 'res/values/')
 sdkbox.copy_files(['protocols/res/layout/plugin_ads.xml', 'protocols/res/layout/plugin_login.xml'], ANDROID_PROJECT_DIR, ANDROID_PROJECT_DIR + 'res/layout/')
@@ -49,7 +49,8 @@ if COCOS_PROJECT_TYPE == 'js':
     sdkbox.android_add_sources(android_js_sources)
     if IOS_PROJECT_DIR != 'n/a':
         sdkbox.xcode_add_sources(ios_js_sources)
-    sdkbox.copy_files('jsbindings/anysdkConst.js', PLUGIN_PATH, COCOS_PROJECT_DIR + 'src/')
+    sdkbox.copy_files('jsbindings/jsb_anysdk.js', PLUGIN_PATH, COCOS_PROJECT_DIR + 'src/')
+    sdkbox.copy_files('jsbindings/jsb_anysdk_constants.js', PLUGIN_PATH, COCOS_PROJECT_DIR + 'src/')
     if sdkbox.satisfies_cocos_version('2.2.1'):
         sdkbox.apply_patch(COCOS_CLASSES_DIR + 'AppDelegate.cpp', 'AppDelegate.js.2.2.1.patch', root=COCOS_CLASSES_DIR)
     else:

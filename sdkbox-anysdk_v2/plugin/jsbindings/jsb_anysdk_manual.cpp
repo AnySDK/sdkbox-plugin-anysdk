@@ -12,7 +12,11 @@
 #include "ProtocolShare.h"
 #include "ProtocolSocial.h"
 #include "ProtocolUser.h"
+#include "ProtocolREC.h"
+#include "ProtocolCustom.h"
+#include "ProtocolCrash.h"
 #include "cocos2d.h"
+#include "JSBRelation.h"
 
 USING_NS_CC;
 using namespace anysdk::framework;
@@ -34,13 +38,376 @@ static JSBool dummy_constructor(JSContext *cx, uint32_t argc, jsval *vp) {
 	js_proxy_t *pp = jsb_new_proxy(cobj, _tmp);
 	JS_AddObjectRoot(cx, &pp->obj);
 	JS_SET_RVAL(cx, vp, OBJECT_TO_JSVAL(_tmp));
-	CCLog("222");
 	return JS_TRUE;
 }
 
 static JSBool empty_constructor(JSContext *cx, uint32_t argc, jsval *vp) {
 	return JS_TRUE;
 }
+
+class ProtocolCustomListener : public CustomResultListener
+{
+public:
+    ProtocolCustomListener():m_bNeedUnroot(false), _jsCallback(JSVAL_VOID), _jsThisObj(JSVAL_VOID)
+    {
+    }
+    ~ProtocolCustomListener()
+    {
+        CCLOG("on Custom result ~listener");
+    }
+    
+    virtual void onCustomResult(CustomResultCode code, const char* msg)
+    {
+        CCLOG("on action result: %d, msg: %s.", code, msg);
+        JSContext *cx = ScriptingCore::getInstance()->getGlobalContext();
+        JSObject *thisObj = JSVAL_IS_VOID(_jsThisObj) ? NULL : JSVAL_TO_OBJECT(_jsThisObj);
+        
+        jsval retval;
+        if (_jsCallback != JSVAL_VOID)
+        {
+            jsval resultCode = INT_TO_JSVAL(code);
+            // JSString* jsstr = JS_NewStringCopyZ(cx, msg);
+            
+            jsval valArr[2];
+            valArr[0] = resultCode;
+            valArr[1] = std_string_to_jsval(cx, msg);
+            
+            JS_AddValueRoot(cx, valArr);
+            JS_CallFunctionValue(cx, thisObj, _jsCallback, 2, valArr, &retval);
+            JS_RemoveValueRoot(cx, valArr);
+        }
+    }
+    
+    void setJSCallbackThis(jsval jsThisObj)
+    {
+        _jsThisObj = jsThisObj;
+        
+        JSObject *thisObj = JSVAL_TO_OBJECT(jsThisObj);
+        js_proxy *p = jsb_get_js_proxy(thisObj);
+        if (!p)
+        {
+            JSContext *cx = ScriptingCore::getInstance()->getGlobalContext();
+            m_bNeedUnroot = true;
+            m_bNeedUnroot &= JS_AddValueRoot(cx, &jsThisObj);
+        }
+    }
+    void setJSCallbackFunc(jsval func) {
+        _jsCallback = func;
+        JSContext* cx = ScriptingCore::getInstance()->getGlobalContext();
+        // Root the callback function.
+        JS_AddNamedValueRoot(cx, &_jsCallback, "JSCallbackWrapper_callback_func");
+    }
+    
+    static ProtocolCustomListener* _instance;
+    static ProtocolCustomListener* getInstance()
+    {
+        if (_instance == NULL)
+        {
+            _instance = new ProtocolCustomListener();
+        }
+        return _instance;
+    }
+    static void purge()
+    {
+        if (_instance != NULL)
+        {
+            delete _instance;
+            _instance = NULL;
+        }
+    }
+private:
+    jsval _jsCallback;
+    jsval _jsThisObj;
+    bool m_bNeedUnroot;
+};
+ProtocolCustomListener* ProtocolCustomListener::_instance = NULL;
+
+JSBool jsb_anysdk_framework_ProtocolCustom_setResultListener(JSContext *cx, uint32_t argc, jsval *vp)
+{
+    CCLOG("in ProtocolCustom_setListener, argc:%d.", argc);
+    JSObject *obj = JS_THIS_OBJECT(cx, vp);
+    js_proxy_t *proxy = jsb_get_js_proxy(obj);
+    ProtocolCustom* cobj = (ProtocolCustom *)(proxy ? proxy->ptr : NULL);
+    JSB_PRECONDITION2( cobj, cx, false, "Invalid Native Object");
+    if (argc != 2)
+    {
+        JS_ReportError(cx, "jsb_anysdk_framework_ProtocolCustom_setListener : wrong number of arguments: %d, was expecting %d", argc, 0);
+        return false;
+    }
+    jsval *argv = JS_ARGV(cx, vp);
+    ProtocolCustomListener* listener = ProtocolCustomListener::getInstance();
+    listener->setJSCallbackFunc( argv[0] );
+    listener->setJSCallbackThis( argv[1] );
+    cobj->setResultListener(listener);
+    return true;
+}
+
+JSBool jsb_anysdk_framework_ProtocolCustom_removeListener(JSContext *cx, uint32_t argc, jsval *vp)
+{
+    CCLOG("in ProtocolCustom_removeListener, argc:%d.", argc);
+    JSObject *obj = JS_THIS_OBJECT(cx, vp);
+    js_proxy_t *proxy = jsb_get_js_proxy(obj);
+    ProtocolCustom* cobj = (ProtocolCustom *)(proxy ? proxy->ptr : NULL);
+    JSB_PRECONDITION2( cobj, cx, false, "Invalid Native Object");
+    if (ProtocolCustomListener::_instance != NULL)
+    {
+        ProtocolCustomListener::purge();
+    }
+    if(argc != 0)
+        CCLOG("ProtocolCustom_removeListener has wrong number of arguments.");
+    return true;
+}
+
+JSBool jsb_anysdk_framework_ProtocolCustom_setDebugMode(JSContext *cx, uint32_t argc, jsval *vp)
+{
+    CCLOG("\n********** \nsetDebugMode was deprecated.\n**********");
+    jsval *argv = JS_ARGV(cx, vp);
+    JSBool ok = JS_TRUE;
+    JSObject *obj = JS_THIS_OBJECT(cx, vp);
+    js_proxy_t *proxy = jsb_get_js_proxy(obj);
+    ProtocolCustom* cobj = (ProtocolCustom *)(proxy ? proxy->ptr : NULL);
+    JSB_PRECONDITION2( cobj, cx, JS_FALSE, "Invalid Native Object");
+    if (argc == 1) {
+        JSBool arg0;
+        ok &= JS_ValueToBoolean(cx, argv[0], &arg0);
+        JSB_PRECONDITION2(ok, cx, JS_FALSE, "Error processing arguments");
+        cobj->setDebugMode(arg0);
+        CCLOG("ProtocolCustom setDebugMode");
+        JS_SET_RVAL(cx, vp, JSVAL_VOID);
+        return JS_TRUE;
+    }
+    
+    JS_ReportError(cx, "wrong number of arguments: %d, was expecting %d", argc, 1);
+    return JS_FALSE;
+}
+
+class ProtocolRECListener : public RECResultListener
+{
+public:
+    ProtocolRECListener():m_bNeedUnroot(false), _jsCallback(JSVAL_VOID), _jsThisObj(JSVAL_VOID)
+    {
+    }
+    ~ProtocolRECListener()
+    {
+        CCLOG("on REC result ~listener");
+    }
+    
+    virtual void onRECResult(RECResultCode code, const char* msg)
+    {
+        CCLOG("on action result: %d, msg: %s.", code, msg);
+        JSContext *cx = ScriptingCore::getInstance()->getGlobalContext();
+        JSObject *thisObj = JSVAL_IS_VOID(_jsThisObj) ? NULL : JSVAL_TO_OBJECT(_jsThisObj);
+        
+        jsval retval;
+        if (_jsCallback != JSVAL_VOID)
+        {
+            jsval resultCode = INT_TO_JSVAL(code);
+            // JSString* jsstr = JS_NewStringCopyZ(cx, msg);
+            
+            jsval valArr[2];
+            valArr[0] = resultCode;
+            valArr[1] = std_string_to_jsval(cx, msg);
+            
+            JS_AddValueRoot(cx, valArr);
+            JS_CallFunctionValue(cx, thisObj, _jsCallback, 2, valArr, &retval);
+            JS_RemoveValueRoot(cx, valArr);
+        }
+    }
+    
+    void setJSCallbackThis(jsval jsThisObj)
+    {
+        _jsThisObj = jsThisObj;
+        
+        JSObject *thisObj = JSVAL_TO_OBJECT(jsThisObj);
+        js_proxy *p = jsb_get_js_proxy(thisObj);
+        if (!p)
+        {
+            JSContext *cx = ScriptingCore::getInstance()->getGlobalContext();
+            m_bNeedUnroot = true;
+            m_bNeedUnroot &= JS_AddValueRoot(cx, &jsThisObj);
+        }
+    }
+    void setJSCallbackFunc(jsval func) {
+        _jsCallback = func;
+        JSContext* cx = ScriptingCore::getInstance()->getGlobalContext();
+        // Root the callback function.
+        JS_AddNamedValueRoot(cx, &_jsCallback, "JSCallbackWrapper_callback_func");
+    }
+    
+    static ProtocolRECListener* _instance;
+    static ProtocolRECListener* getInstance()
+    {
+        if (_instance == NULL)
+        {
+            _instance = new ProtocolRECListener();
+        }
+        return _instance;
+    }
+    static void purge()
+    {
+        if (_instance != NULL)
+        {
+            delete _instance;
+            _instance = NULL;
+        }
+    }
+private:
+    jsval _jsCallback;
+    jsval _jsThisObj;
+    bool m_bNeedUnroot;
+};
+ProtocolRECListener* ProtocolRECListener::_instance = NULL;
+
+JSBool jsb_anysdk_framework_ProtocolREC_setResultListener(JSContext *cx, uint32_t argc, jsval *vp)
+{
+    CCLOG("in ProtocolREC_setListener, argc:%d.", argc);
+    JSObject *obj = JS_THIS_OBJECT(cx, vp);
+    js_proxy_t *proxy = jsb_get_js_proxy(obj);
+    ProtocolREC* cobj = (ProtocolREC *)(proxy ? proxy->ptr : NULL);
+    JSB_PRECONDITION2( cobj, cx, false, "Invalid Native Object");
+    if (argc != 2)
+    {
+        JS_ReportError(cx, "jsb_anysdk_framework_ProtocolREC_setListener : wrong number of arguments: %d, was expecting %d", argc, 0);
+        return false;
+    }
+    jsval *argv = JS_ARGV(cx, vp);
+    ProtocolRECListener* listener = ProtocolRECListener::getInstance();
+    listener->setJSCallbackFunc( argv[0] );
+    listener->setJSCallbackThis( argv[1] );
+    cobj->setResultListener(listener);
+    return true;
+}
+
+JSBool jsb_anysdk_framework_ProtocolREC_removeListener(JSContext *cx, uint32_t argc, jsval *vp)
+{
+    CCLOG("in ProtocolREC_removeListener, argc:%d.", argc);
+    JSObject *obj = JS_THIS_OBJECT(cx, vp);
+    js_proxy_t *proxy = jsb_get_js_proxy(obj);
+    ProtocolREC* cobj = (ProtocolREC *)(proxy ? proxy->ptr : NULL);
+    JSB_PRECONDITION2( cobj, cx, false, "Invalid Native Object");
+    if (ProtocolRECListener::_instance != NULL)
+    {
+        ProtocolRECListener::purge();
+    }
+    if(argc != 0)
+        CCLOG("ProtocolREC_removeListener has wrong number of arguments.");
+    return true;
+}
+
+JSBool jsb_anysdk_framework_ProtocolREC_setDebugMode(JSContext *cx, uint32_t argc, jsval *vp)
+{
+    CCLOG("\n********** \nsetDebugMode was deprecated.\n**********");
+    jsval *argv = JS_ARGV(cx, vp);
+    JSBool ok = JS_TRUE;
+    JSObject *obj = JS_THIS_OBJECT(cx, vp);
+    js_proxy_t *proxy = jsb_get_js_proxy(obj);
+    ProtocolREC* cobj = (ProtocolREC *)(proxy ? proxy->ptr : NULL);
+    JSB_PRECONDITION2( cobj, cx, JS_FALSE, "Invalid Native Object");
+    if (argc == 1) {
+        JSBool arg0;
+        ok &= JS_ValueToBoolean(cx, argv[0], &arg0);
+        JSB_PRECONDITION2(ok, cx, JS_FALSE, "Error processing arguments");
+        cobj->setDebugMode(arg0);
+        CCLOG("ProtocolREC setDebugMode");
+        JS_SET_RVAL(cx, vp, JSVAL_VOID);
+        return JS_TRUE;
+    }
+    
+    JS_ReportError(cx, "wrong number of arguments: %d, was expecting %d", argc, 1);
+    return JS_FALSE;
+}
+
+JSBool jsb_anysdk_framework_ProtocolREC_share(JSContext *cx, uint32_t argc, jsval *vp)
+{
+    CCLog("in function share.");
+    JSObject *obj = JS_THIS_OBJECT(cx, vp);
+    js_proxy_t *proxy = jsb_get_js_proxy(obj);
+    anysdk::framework::ProtocolREC* cobj = (anysdk::framework::ProtocolREC *)(proxy ? proxy->ptr : NULL);
+    JSB_PRECONDITION2( cobj, cx, JS_FALSE, "Invalid Native Object");
+    if (argc != 1) {
+        JS_ReportError(cx, "js_anysdk_ProtocolREC_share : wrong number of arguments: %d, was expecting %d", argc, 0);
+        return JS_FALSE;
+    }
+    CCLog("will share");
+    jsval *argv = JS_ARGV(cx, vp);
+    jsval arg0 = argv[0];
+    if ( arg0.isObject() ){
+        JSObject* tmp = JSVAL_TO_OBJECT(arg0);
+        if (!tmp) {
+            CCLOG("%s", "jsval_to_ccvaluemap: the jsval is not an object.");
+            return false;
+        }
+        
+        JSObject* it = JS_NewPropertyIterator(cx, tmp);
+        
+        TVideoInfo arg;
+        
+        while (true)
+        {
+            jsid idp;
+            jsval key;
+            if (! JS_NextProperty(cx, it, &idp) || ! JS_IdToValue(cx, idp, &key)) {
+                return false; // error
+            }
+            
+            if (key == JSVAL_VOID) {
+                break; // end of iteration
+            }
+            
+            if (!JSVAL_IS_STRING(key)) {
+                continue; // ignore integer properties
+            }
+            
+            JSStringWrapper keyWrapper(JSVAL_TO_STRING(key), cx);
+            
+            std::string v1;
+            std::string v2;
+            
+            v1 = keyWrapper.get();
+            jsval value;
+            JS_GetPropertyById(cx, tmp, idp, &value);
+            if (value.isString())
+            {
+                bool ok = jsval_to_std_string(cx, value, &v2);
+                if (ok){
+                    CCLog("key:%s, value: %s.",v1.c_str(), v2.c_str());
+                    arg.insert( std::map<std::string,std::string>::value_type(v1, v2) );
+                }
+                else{
+                    CCLog("wrong param in stringmap.\n");
+                }
+            }
+        }
+        cobj->share( arg );
+    }
+    return JS_TRUE;
+}
+
+
+
+JSBool jsb_anysdk_framework_ProtocolCrash_setDebugMode(JSContext *cx, uint32_t argc, jsval *vp)
+{
+    CCLOG("\n********** \nsetDebugMode was deprecated.\n**********");
+    jsval *argv = JS_ARGV(cx, vp);
+    JSBool ok = JS_TRUE;
+    JSObject *obj = JS_THIS_OBJECT(cx, vp);
+    js_proxy_t *proxy = jsb_get_js_proxy(obj);
+    ProtocolCustom* cobj = (ProtocolCustom *)(proxy ? proxy->ptr : NULL);
+    JSB_PRECONDITION2( cobj, cx, JS_FALSE, "Invalid Native Object");
+    if (argc == 1) {
+        JSBool arg0;
+        ok &= JS_ValueToBoolean(cx, argv[0], &arg0);
+        JSB_PRECONDITION2(ok, cx, JS_FALSE, "Error processing arguments");
+        cobj->setDebugMode(arg0);
+        CCLOG("ProtocolCrash setDebugMode");
+        JS_SET_RVAL(cx, vp, JSVAL_VOID);
+        return JS_TRUE;
+    }
+    
+    JS_ReportError(cx, "wrong number of arguments: %d, was expecting %d", argc, 1);
+    return JS_FALSE;
+}
+
 
 JSClass  *jsb_ProtocolShare_class;
 JSObject *jsb_ProtocolShare_prototype;
@@ -1943,15 +2310,121 @@ JSBool jsb_anysdk_framework_PluginParam_create(JSContext *cx, uint32_t argc, jsv
 	return JS_TRUE;
 }
 
+
+JSClass  *jsb_JSBRelation_class;
+JSObject *jsb_JSBRelation_prototype;
+
+JSBool js_anysdk_JSBRelation_getMethodsOfPlugin(JSContext *cx, uint32_t argc, jsval *vp)
+{
+    jsval *argv = JS_ARGV(cx, vp);
+    bool ok = true;
+    if (argc == 1) {
+        anysdk::framework::PluginProtocol* plugin;
+        JSObject *jsobj;
+        JSBool ok = JS_ValueToObject( cx, argv[0], &jsobj );
+        JSB_PRECONDITION3( ok, cx, JS_FALSE, "Error converting value to object");
+        js_proxy_t *proxy = jsb_get_js_proxy(jsobj);
+        plugin = (anysdk::framework::PluginProtocol*)(proxy ? proxy->ptr : NULL);
+        JSB_PRECONDITION2( plugin, cx, false, "Invalid Native Object");
+        std::string ret = JSBRelation::getMethodsOfPlugin(plugin);
+        jsval jsret = JSVAL_NULL;
+        jsret = std_string_to_jsval(cx, ret);
+        JS_SET_RVAL(cx, vp, jsret);
+        return true;
+    }
+    JS_ReportError(cx, "js_anysdk_framework_JSBRelation_getMethodsOfPlugin : wrong number of arguments");
+    return false;
+}
+
+
+
+void js_anysdk_JSBRelation_finalize(JSFreeOp *fop, JSObject *obj) {
+    CCLOGINFO("jsbindings: finalizing JS object %p (JSBRelation)", obj);
+    js_proxy_t* nproxy;
+    js_proxy_t* jsproxy;
+    jsproxy = jsb_get_js_proxy(obj);
+    if (jsproxy) {
+        nproxy = jsb_get_native_proxy(jsproxy->ptr);
+        
+        JSBRelation *nobj = static_cast<JSBRelation *>(nproxy->ptr);
+        if (nobj)
+        delete nobj;
+        
+        jsb_remove_proxy(nproxy, jsproxy);
+    }
+}
+
+void js_register_anysdk_JSBRelation(JSContext *cx, JSObject *global) {
+    jsb_JSBRelation_class = (JSClass *)calloc(1, sizeof(JSClass));
+    jsb_JSBRelation_class->name = "JSBRelation";
+    jsb_JSBRelation_class->addProperty = JS_PropertyStub;
+    jsb_JSBRelation_class->delProperty = JS_PropertyStub;
+    jsb_JSBRelation_class->getProperty = JS_PropertyStub;
+    jsb_JSBRelation_class->setProperty = JS_StrictPropertyStub;
+    jsb_JSBRelation_class->enumerate = JS_EnumerateStub;
+    jsb_JSBRelation_class->resolve = JS_ResolveStub;
+    jsb_JSBRelation_class->convert = JS_ConvertStub;
+    jsb_JSBRelation_class->finalize = js_anysdk_JSBRelation_finalize;
+    jsb_JSBRelation_class->flags = JSCLASS_HAS_RESERVED_SLOTS(2);
+    
+    static JSPropertySpec properties[] = {
+        {0, 0, 0, JSOP_NULLWRAPPER, JSOP_NULLWRAPPER}
+    };
+    
+    static JSFunctionSpec funcs[] = {
+        JS_FS_END
+    };
+    
+    static JSFunctionSpec st_funcs[] = {
+        JS_FN("getMethodsOfPlugin", js_anysdk_JSBRelation_getMethodsOfPlugin, 1, JSPROP_PERMANENT | JSPROP_ENUMERATE),
+        JS_FS_END
+    };
+    
+    jsb_JSBRelation_prototype = JS_InitClass(
+                                                              cx, global,
+                                                              NULL, // parent proto
+                                                              jsb_JSBRelation_class,
+                                                              empty_constructor, 0, // no constructor
+                                                              properties,
+                                                              funcs,
+                                                              NULL, // no static properties
+                                                              st_funcs);
+    // make the class enumerable in the registered namespace
+     JSBool found;
+    //FIXME: Removed in Firefox v27
+      JS_SetPropertyAttributes(cx, global, "JSBRelation", JSPROP_ENUMERATE | JSPROP_READONLY, &found);
+    
+    // add the proto and JSClass to the type->js info hash table
+    TypeTest<JSBRelation> t;
+    js_type_class_t *p;
+    uint32_t typeId = t.s_id();
+    std::string typeName = t.s_name();
+    HASH_FIND_INT(_js_global_type_ht, &typeId, p);
+    if (!p) {
+        p = (js_type_class_t *)malloc(sizeof(js_type_class_t));
+        p->jsclass = jsb_JSBRelation_class;
+        p->proto = jsb_JSBRelation_prototype;
+        p->parentProto = NULL;
+        HASH_ADD_INT(_js_global_type_ht, type, p);
+    }
+}
+
+
+
 extern JSObject* jsb_PluginProtocol_prototype;
 extern JSObject* jsb_ProtocolIAP_prototype;
 extern JSObject* jsb_ProtocolAnalytics_prototype;
 extern JSObject* jsb_ProtocolAds_prototype;
+extern JSObject* jsb_ProtocolCustom_prototype;
+extern JSObject* jsb_ProtocolCrash_prototype;
+extern JSObject* jsb_ProtocolREC_prototype;
 extern JSObject* jsb_ProtocolSocial_prototype;
 extern JSObject* jsb_ProtocolPush_prototype;
 extern JSObject* jsb_ProtocolUser_prototype;
 extern JSObject* jsb_AgentManager_prototype;
 extern JSObject* jsb_PluginParam_prototype;
+extern JSObject *jsb_JSBRelation_prototype;
+
 
 void register_all_anysdk_manual(JSContext* cx, JSObject* obj) {
 	// first, try to get the ns
@@ -2018,6 +2491,22 @@ void register_all_anysdk_manual(JSContext* cx, JSObject* obj) {
 	// ProtocolShare
 	js_register_anysdk_ProtocolShare(cx, obj);
 	// js_register_anysdk_PluginParam(cx, obj);
+    js_register_anysdk_JSBRelation(cx, obj);
+    
+    // ProtocolCrash
+    JS_DefineFunction(cx, jsb_ProtocolCrash_prototype, "setDebugMode", jsb_anysdk_framework_ProtocolCrash_setDebugMode, 1, JSPROP_READONLY | JSPROP_PERMANENT);
+    
+    // ProtocolCustom
+    JS_DefineFunction(cx, jsb_ProtocolCustom_prototype, "setResultListener", jsb_anysdk_framework_ProtocolCustom_setResultListener, 2, JSPROP_ENUMERATE | JSPROP_PERMANENT);
+    JS_DefineFunction(cx, jsb_ProtocolCustom_prototype, "removeListener", jsb_anysdk_framework_ProtocolCustom_removeListener, 1, JSPROP_ENUMERATE | JSPROP_PERMANENT);
+    JS_DefineFunction(cx, jsb_ProtocolCustom_prototype, "setDebugMode", jsb_anysdk_framework_ProtocolCustom_setDebugMode, 1, JSPROP_READONLY | JSPROP_PERMANENT);
+    
+    // ProtocolREC
+    JS_DefineFunction(cx, jsb_ProtocolREC_prototype, "setResultListener", jsb_anysdk_framework_ProtocolREC_setResultListener, 2, JSPROP_ENUMERATE | JSPROP_PERMANENT);
+    JS_DefineFunction(cx, jsb_ProtocolREC_prototype, "removeListener", jsb_anysdk_framework_ProtocolREC_removeListener, 1, JSPROP_ENUMERATE | JSPROP_PERMANENT);
+    JS_DefineFunction(cx, jsb_ProtocolREC_prototype, "setDebugMode", jsb_anysdk_framework_ProtocolREC_setDebugMode, 1, JSPROP_READONLY | JSPROP_PERMANENT);
+     JS_DefineFunction(cx, jsb_ProtocolREC_prototype, "share", jsb_anysdk_framework_ProtocolREC_share, 1, JSPROP_READONLY | JSPROP_PERMANENT);
+    
 }
 
 
@@ -2028,5 +2517,7 @@ void anysdk_jsb_cleanAllSingletons() {
     ProtocolAdsResultListener::purge();
     ProtocolUserActionListener::purge();
     ProtocolIAPResultListener::purge();
+    ProtocolCustomListener::purge();
+    ProtocolRECListener::purge();
 }
 

@@ -25,6 +25,7 @@ JSBool js_anysdk_PluginProtocol_constructor(JSContext *cx, uint32_t argc, jsval 
 void js_anysdk_PluginProtocol_finalize(JSContext *cx, JSObject *obj);
 void js_register_anysdk_PluginProtocol(JSContext *cx, JSObject *global);
 void register_all_anysdk(JSContext* cx, JSObject* obj);
+JSBool js_anysdk_PluginProtocol_isFunctionSupported(JSContext *cx, uint32_t argc, jsval *vp);
 JSBool js_anysdk_PluginProtocol_getPluginName(JSContext *cx, uint32_t argc, jsval *vp);
 JSBool js_anysdk_PluginProtocol_getPluginVersion(JSContext *cx, uint32_t argc, jsval *vp);
 JSBool js_anysdk_PluginProtocol_setPluginName(JSContext *cx, uint32_t argc, jsval *vp);
@@ -77,7 +78,6 @@ JSBool js_anysdk_ProtocolAnalytics_setCaptureUncaughtException(JSContext *cx, ui
 JSBool js_anysdk_ProtocolAnalytics_setSessionContinueMillis(JSContext *cx, uint32_t argc, jsval *vp);
 JSBool js_anysdk_ProtocolAnalytics_startSession(JSContext *cx, uint32_t argc, jsval *vp);
 JSBool js_anysdk_ProtocolAnalytics_stopSession(JSContext *cx, uint32_t argc, jsval *vp);
-JSBool js_anysdk_ProtocolAnalytics_isFunctionSupported(JSContext *cx, uint32_t argc, jsval *vp);
 JSBool js_anysdk_ProtocolAnalytics_logTimedEventEnd(JSContext *cx, uint32_t argc, jsval *vp);
 
 extern JSClass  *jsb_ProtocolAds_class;
@@ -116,7 +116,6 @@ void js_register_anysdk_ProtocolUser(JSContext *cx, JSObject *global);
 void register_all_anysdk(JSContext* cx, JSObject* obj);
 JSBool js_anysdk_ProtocolUser_isLogined(JSContext *cx, uint32_t argc, jsval *vp);
 JSBool js_anysdk_ProtocolUser_getUserID(JSContext *cx, uint32_t argc, jsval *vp);
-JSBool js_anysdk_ProtocolUser_isFunctionSupported(JSContext *cx, uint32_t argc, jsval *vp);
 JSBool js_anysdk_ProtocolUser_login(JSContext *cx, uint32_t argc, jsval *vp);
 JSBool js_anysdk_ProtocolUser_getPluginId(JSContext *cx, uint32_t argc, jsval *vp);
 
@@ -131,6 +130,35 @@ JSBool js_anysdk_ProtocolPush_startPush(JSContext *cx, uint32_t argc, jsval *vp)
 JSBool js_anysdk_ProtocolPush_closePush(JSContext *cx, uint32_t argc, jsval *vp);
 JSBool js_anysdk_ProtocolPush_delAlias(JSContext *cx, uint32_t argc, jsval *vp);
 JSBool js_anysdk_ProtocolPush_setAlias(JSContext *cx, uint32_t argc, jsval *vp);
+
+extern JSClass  *jsb_ProtocolCrash_class;
+extern JSObject *jsb_ProtocolCrash_prototype;
+
+JSBool js_anysdk_ProtocolCrash_constructor(JSContext *cx, uint32_t argc, jsval *vp);
+void js_anysdk_ProtocolCrash_finalize(JSContext *cx, JSObject *obj);
+void js_register_anysdk_ProtocolCrash(JSContext *cx, JSObject *global);
+void register_all_anysdk(JSContext* cx, JSObject* obj);
+JSBool js_anysdk_ProtocolCrash_setUserIdentifier(JSContext *cx, uint32_t argc, jsval *vp);
+JSBool js_anysdk_ProtocolCrash_reportException(JSContext *cx, uint32_t argc, jsval *vp);
+JSBool js_anysdk_ProtocolCrash_leaveBreadcrumb(JSContext *cx, uint32_t argc, jsval *vp);
+
+extern JSClass  *jsb_ProtocolREC_class;
+extern JSObject *jsb_ProtocolREC_prototype;
+
+JSBool js_anysdk_ProtocolREC_constructor(JSContext *cx, uint32_t argc, jsval *vp);
+void js_anysdk_ProtocolREC_finalize(JSContext *cx, JSObject *obj);
+void js_register_anysdk_ProtocolREC(JSContext *cx, JSObject *global);
+void register_all_anysdk(JSContext* cx, JSObject* obj);
+JSBool js_anysdk_ProtocolREC_startRecording(JSContext *cx, uint32_t argc, jsval *vp);
+JSBool js_anysdk_ProtocolREC_stopRecording(JSContext *cx, uint32_t argc, jsval *vp);
+
+extern JSClass  *jsb_ProtocolCustom_class;
+extern JSObject *jsb_ProtocolCustom_prototype;
+
+JSBool js_anysdk_ProtocolCustom_constructor(JSContext *cx, uint32_t argc, jsval *vp);
+void js_anysdk_ProtocolCustom_finalize(JSContext *cx, JSObject *obj);
+void js_register_anysdk_ProtocolCustom(JSContext *cx, JSObject *global);
+void register_all_anysdk(JSContext* cx, JSObject* obj);
 
 extern JSClass  *jsb_AgentManager_class;
 extern JSObject *jsb_AgentManager_prototype;
@@ -151,6 +179,9 @@ JSBool js_anysdk_AgentManager_getAdsPlugin(JSContext *cx, uint32_t argc, jsval *
 JSBool js_anysdk_AgentManager_getPushPlugin(JSContext *cx, uint32_t argc, jsval *vp);
 JSBool js_anysdk_AgentManager_getSharePlugin(JSContext *cx, uint32_t argc, jsval *vp);
 JSBool js_anysdk_AgentManager_getAnalyticsPlugin(JSContext *cx, uint32_t argc, jsval *vp);
+JSBool js_anysdk_AgentManager_getCrashPlugin(JSContext *cx, uint32_t argc, jsval *vp);
+JSBool js_anysdk_AgentManager_getCustomPlugin(JSContext *cx, uint32_t argc, jsval *vp);
+JSBool js_anysdk_AgentManager_getRECPlugin(JSContext *cx, uint32_t argc, jsval *vp);
 JSBool js_anysdk_AgentManager_getChannelId(JSContext *cx, uint32_t argc, jsval *vp);
 JSBool js_anysdk_AgentManager_end(JSContext *cx, uint32_t argc, jsval *vp);
 JSBool js_anysdk_AgentManager_getInstance(JSContext *cx, uint32_t argc, jsval *vp);
