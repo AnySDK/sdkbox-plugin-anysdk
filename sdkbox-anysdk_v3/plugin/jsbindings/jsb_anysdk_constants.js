@@ -72,7 +72,7 @@ anysdk.PayResultCode = {
 	kPayInitFail:6,		/**< enum value is callback of failing to init sdk . */
 	kPayNowPaying:7, 	/**< enum value is callback of paying now . */
 	kPayRechargeSuccess:8,/**< enum value is callback of  succeeding in recharging. */
-	kPayExtension : 30000 /**< enum value is  extension code . */
+	kPayExtension : 30000, /**< enum value is  extension code . */
     kPayNeedLoginAgain : 31001 /**< enum value is  callback of  logining again . */
 };
 
