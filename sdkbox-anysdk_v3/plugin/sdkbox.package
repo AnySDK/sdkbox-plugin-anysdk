@@ -9,9 +9,13 @@ if sdkbox.android_has_key_value(sdkbox.APPLICATION, 'APP_STL', 'stlport_static')
     sdkbox.copy_files('android/protocols_stlport_static', PLUGIN_PATH, ANDROID_PROJECT_DIR,{'protocols_stlport_static':'protocols'})
 
 if COCOS_ENGINE_TYPE == 'prebuilt':
-    sdkbox.copy_files('protocols/android/libPluginProtocol.jar', ANDROID_PROJECT_DIR, ANDROID_PROJECT_DIR + 'jars/')
+    if sdkbox.satisfies_cocos_version('3.10'):
+        sdkbox.copy_files('protocols/android/libPluginProtocol.jar', ANDROID_PROJECT_DIR, ANDROID_PROJECT_DIR + 'libs/')
+    else:
+        sdkbox.copy_files('protocols/android/libPluginProtocol.jar', ANDROID_PROJECT_DIR, ANDROID_PROJECT_DIR + 'jars/')
 else:
     sdkbox.copy_files('protocols/android/libPluginProtocol.jar', ANDROID_PROJECT_DIR, ANDROID_PROJECT_DIR + 'libs/')
+    
 sdkbox.copy_files(['protocols/res/drawable/plugin_btn_close.png', 'protocols/res/drawable/plugin_ui_ad.png'], ANDROID_PROJECT_DIR, ANDROID_PROJECT_DIR + 'res/drawable/')
 sdkbox.copy_files('protocols/res/values-en/plugin_string.xml', ANDROID_PROJECT_DIR, ANDROID_PROJECT_DIR + 'res/values-en/')
 sdkbox.copy_files('protocols/res/values/plugin_string.xml', ANDROID_PROJECT_DIR, ANDROID_PROJECT_DIR + 'res/values/')
