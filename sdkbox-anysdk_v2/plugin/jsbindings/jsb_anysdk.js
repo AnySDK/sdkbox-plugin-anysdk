@@ -60,10 +60,12 @@ anysdk.registerAPIs = function(plugin) {
 anysdk.agentManager._loadAllPlugins = anysdk.agentManager.loadAllPlugins;
 anysdk.agentManager.loadAllPlugins = function (callback, target) {
     anysdk.agentManager._loadAllPlugins();
-    if (target){
-        callback.call(target, 0, "loadAllPlugins finish");
-    }else{
-        callback(0, "loadAllPlugins finish");
+    if(callback){
+        if (target){
+            callback.call(target, 0, "loadAllPlugins finish");
+        }else{
+            callback(0, "loadAllPlugins finish");
+        }
     }
 }
 
@@ -104,9 +106,10 @@ anysdk.agentManager.getIAPPlugins = function () {
 
 anysdk.agentManager.getIAPPlugin = function () {
     var iapPlugins = anysdk.agentManager.getIAPPlugins();
-    var names = Object.getOwnPropertyNames(iapPlugins);
-    if (names && names.length) {
-        return  iapPlugins[names[0]];
+    if(iapPlugins != null){
+        for(var item in iapPlugins){
+            return iapPlugins[item];
+        }
     }
     return null;
 }
