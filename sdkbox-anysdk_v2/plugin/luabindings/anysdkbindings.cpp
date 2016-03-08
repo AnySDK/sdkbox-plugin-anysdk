@@ -52,13 +52,11 @@ extern "C" {
 #include "ProtocolREC.h"
 #include "ProtocolCustom.h"
 #include "ProtocolCrash.h"
-
 #include "cocos2d.h"
 
 using namespace anysdk::framework;
 
 USING_NS_CC;
-
 
 /* function to release collected object via destructor */
 #ifdef __cplusplus
@@ -485,130 +483,34 @@ static int tolua_anysdk_AgentManager_getSocialPlugin00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: getAdsPlugin of class  AgentManager */
-#ifndef TOLUA_DISABLE_tolua_anysdk_AgentManager_getAdsPlugin00
-static int tolua_anysdk_AgentManager_getAdsPlugin00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"AgentManager",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,2,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  AgentManager* self = (AgentManager*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getAdsPlugin'", NULL);
-#endif
-  {
-   ProtocolAds* tolua_ret = (ProtocolAds*)  self->getAdsPlugin();
-    tolua_pushusertype(tolua_S,(void*)tolua_ret,"ProtocolAds");
-  }
- }
- return 1;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'getAdsPlugin'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* method: getChannelId of class  AgentManager */
-#ifndef TOLUA_DISABLE_tolua_anysdk_AgentManager_getChannelId00
-static int tolua_anysdk_AgentManager_getChannelId00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"AgentManager",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,2,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  AgentManager* self = (AgentManager*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getChannelId'", NULL);
-#endif
-  {
-   std::string tolua_ret = (std::string)  self->getChannelId();
-   tolua_pushcppstring(tolua_S,(const char*)tolua_ret);
-  }
- }
- return 1;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'getChannelId'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* method: getPushPlugin of class  AgentManager */
-#ifndef TOLUA_DISABLE_tolua_anysdk_AgentManager_getPushPlugin00
-static int tolua_anysdk_AgentManager_getPushPlugin00(lua_State* tolua_S)
-{
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"AgentManager",0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,2,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  AgentManager* self = (AgentManager*)  tolua_tousertype(tolua_S,1,0);
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getPushPlugin'", NULL);
-#endif
-  {
-   ProtocolPush* tolua_ret = (ProtocolPush*)  self->getPushPlugin();
-    tolua_pushusertype(tolua_S,(void*)tolua_ret,"ProtocolPush");
-  }
- }
- return 1;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'getPushPlugin'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
 /* method: getRECPlugin of class  AgentManager */
 #ifndef TOLUA_DISABLE_tolua_anysdk_AgentManager_getRECPlugin00
 static int tolua_anysdk_AgentManager_getRECPlugin00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
-    tolua_Error tolua_err;
-    if (
-        !tolua_isusertype(tolua_S,1,"AgentManager",0,&tolua_err) ||
-        !tolua_isnoobj(tolua_S,2,&tolua_err)
-        )
-        goto tolua_lerror;
-    else
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"AgentManager",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
 #endif
-    {
-        AgentManager* self = (AgentManager*)  tolua_tousertype(tolua_S,1,0);
+ {
+  AgentManager* self = (AgentManager*)  tolua_tousertype(tolua_S,1,0);
 #ifndef TOLUA_RELEASE
-        if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getRECPlugin'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getRECPlugin'", NULL);
 #endif
-        {
-            ProtocolREC* tolua_ret = (ProtocolREC*)  self->getRECPlugin();
-            tolua_pushusertype(tolua_S,(void*)tolua_ret,"ProtocolREC");
-        }
-    }
-    return 1;
+  {
+   ProtocolREC* tolua_ret = (ProtocolREC*)  self->getRECPlugin();
+    tolua_pushusertype(tolua_S,(void*)tolua_ret,"ProtocolREC");
+  }
+ }
+ return 1;
 #ifndef TOLUA_RELEASE
-tolua_lerror:
-    tolua_error(tolua_S,"#ferror in function 'getRECPlugin'.",&tolua_err);
-    return 0;
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getRECPlugin'.",&tolua_err);
+ return 0;
 #endif
 }
 #endif //#ifndef TOLUA_DISABLE
@@ -673,6 +575,102 @@ static int tolua_anysdk_AgentManager_getCrashPlugin00(lua_State* tolua_S)
 tolua_lerror:
     tolua_error(tolua_S,"#ferror in function 'getCrashPlugin'.",&tolua_err);
     return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getAdsPlugin of class  AgentManager */
+#ifndef TOLUA_DISABLE_tolua_anysdk_AgentManager_getAdsPlugin00
+static int tolua_anysdk_AgentManager_getAdsPlugin00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+    tolua_Error tolua_err;
+    if (
+        !tolua_isusertype(tolua_S,1,"AgentManager",0,&tolua_err) ||
+        !tolua_isnoobj(tolua_S,2,&tolua_err)
+        )
+        goto tolua_lerror;
+    else
+#endif
+    {
+        AgentManager* self = (AgentManager*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+        if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getAdsPlugin'", NULL);
+#endif
+        {
+            ProtocolAds* tolua_ret = (ProtocolAds*)  self->getAdsPlugin();
+            tolua_pushusertype(tolua_S,(void*)tolua_ret,"ProtocolAds");
+        }
+    }
+    return 1;
+#ifndef TOLUA_RELEASE
+tolua_lerror:
+    tolua_error(tolua_S,"#ferror in function 'getAdsPlugin'.",&tolua_err);
+    return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getChannelId of class  AgentManager */
+#ifndef TOLUA_DISABLE_tolua_anysdk_AgentManager_getChannelId00
+static int tolua_anysdk_AgentManager_getChannelId00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"AgentManager",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  AgentManager* self = (AgentManager*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getChannelId'", NULL);
+#endif
+  {
+   std::string tolua_ret = (std::string)  self->getChannelId();
+   tolua_pushcppstring(tolua_S,(const char*)tolua_ret);
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getChannelId'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: getPushPlugin of class  AgentManager */
+#ifndef TOLUA_DISABLE_tolua_anysdk_AgentManager_getPushPlugin00
+static int tolua_anysdk_AgentManager_getPushPlugin00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"AgentManager",0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,2,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  AgentManager* self = (AgentManager*)  tolua_tousertype(tolua_S,1,0);
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'getPushPlugin'", NULL);
+#endif
+  {
+   ProtocolPush* tolua_ret = (ProtocolPush*)  self->getPushPlugin();
+    tolua_pushusertype(tolua_S,(void*)tolua_ret,"ProtocolPush");
+  }
+ }
+ return 1;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'getPushPlugin'.",&tolua_err);
+ return 0;
 #endif
 }
 #endif //#ifndef TOLUA_DISABLE
@@ -1149,6 +1147,40 @@ static int tolua_anysdk_PluginProtocol_getSDKVersion00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+/* method: setDebugMode of class  PluginProtocol */
+#ifndef TOLUA_DISABLE_tolua_anysdk_PluginProtocol_setDebugMode00
+ static int tolua_anysdk_PluginProtocol_setDebugMode00(lua_State* tolua_S)
+{
+     CCLOG("\n********** \nsetDebugMode was deprecated.\n**********");
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"PluginProtocol",0,&tolua_err) ||
+     !tolua_isboolean(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,3,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  PluginProtocol* self = (PluginProtocol*)  tolua_tousertype(tolua_S,1,0);
+  bool bDebug = ((bool)  tolua_toboolean(tolua_S,2,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setDebugMode'", NULL);
+#endif
+  {
+   self->setDebugMode(bDebug);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'setDebugMode'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
 /* method: isFunctionSupported of class PluginProtocol */
 #ifndef TOLUA_DISABLE_tolua_anysdk_PluginProtocol_isFunctionSupported00
 static int tolua_anysdk_PluginProtocol_isFunctionSupported00(lua_State* tolua_S)
@@ -1183,41 +1215,7 @@ tolua_lerror:
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: setDebugMode of class  PluginProtocol */
-#ifndef TOLUA_DISABLE_tolua_anysdk_PluginProtocol_setDebugMode00
-static int tolua_anysdk_PluginProtocol_setDebugMode00(lua_State* tolua_S)
-{
-    CCLOG("\n********** \nsetDebugMode was deprecated.\n**********");
-#ifndef TOLUA_RELEASE
- tolua_Error tolua_err;
- if (
-     !tolua_isusertype(tolua_S,1,"PluginProtocol",0,&tolua_err) ||
-     !tolua_isboolean(tolua_S,2,0,&tolua_err) ||
-     !tolua_isnoobj(tolua_S,3,&tolua_err)
- )
-  goto tolua_lerror;
- else
-#endif
- {
-  PluginProtocol* self = (PluginProtocol*)  tolua_tousertype(tolua_S,1,0);
-  bool bDebug = ((bool)  tolua_toboolean(tolua_S,2,0));
-#ifndef TOLUA_RELEASE
-  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'setDebugMode'", NULL);
-#endif
-  {
-   self->setDebugMode(bDebug);
-  }
- }
- return 0;
-#ifndef TOLUA_RELEASE
- tolua_lerror:
- tolua_error(tolua_S,"#ferror in function 'setDebugMode'.",&tolua_err);
- return 0;
-#endif
-}
-#endif //#ifndef TOLUA_DISABLE
-
-/* method: showAds of class  ProtocolAds */
+/* method: showREC of class  ProtocolAds */
 #ifndef TOLUA_DISABLE_tolua_anysdk_ProtocolAds_showAds00
 static int tolua_anysdk_ProtocolAds_showAds00(lua_State* tolua_S)
 {
@@ -2376,7 +2374,7 @@ static int tolua_anysdk_ProtocolCrash_reportException00(lua_State* tolua_S)
         const char* errorId = ((const char*)  tolua_tostring(tolua_S,2,0));
         const char* message = ((const char*)  tolua_tostring(tolua_S,3,0));
 #ifndef TOLUA_RELEASE
-        if (!self) tolua_error(tolua_S,"invalid 'self' in function 'reportException'", NULL);
+        if (!self) tolua_error(tolua_S,"invalid 'self' in function 'logError'", NULL);
 #endif
         {
             self->reportException(errorId,message);
@@ -2385,7 +2383,7 @@ static int tolua_anysdk_ProtocolCrash_reportException00(lua_State* tolua_S)
     return 0;
 #ifndef TOLUA_RELEASE
 tolua_lerror:
-    tolua_error(tolua_S,"#ferror in function 'reportException'.",&tolua_err);
+    tolua_error(tolua_S,"#ferror in function 'logError'.",&tolua_err);
     return 0;
 #endif
 }
@@ -2528,125 +2526,125 @@ TOLUA_API int tolua_anysdk_open (lua_State* tolua_S)
  tolua_reg_types(tolua_S);
  tolua_module(tolua_S,NULL,0);
  tolua_beginmodule(tolua_S,NULL);
-  #ifdef __cplusplus
-  tolua_cclass(tolua_S,"AgentManager","AgentManager","",tolua_collect_AgentManager);
-  #else
-  tolua_cclass(tolua_S,"AgentManager","AgentManager","",NULL);
-  #endif
-  tolua_beginmodule(tolua_S,"AgentManager");
-   tolua_function(tolua_S,"delete",tolua_anysdk_AgentManager_delete00);
-   tolua_function(tolua_S,"getInstance",tolua_anysdk_AgentManager_getInstance00);
-   tolua_function(tolua_S,"endManager",tolua_anysdk_AgentManager_endManager00);
-   tolua_function(tolua_S,"init",tolua_anysdk_AgentManager_init00);
-   tolua_function(tolua_S,"loadALLPlugin",tolua_anysdk_AgentManager_loadALLPlugin00);
-   tolua_function(tolua_S,"unloadALLPlugin",tolua_anysdk_AgentManager_unloadALLPlugin00);
+    #ifdef __cplusplus
+    tolua_cclass(tolua_S,"AgentManager","AgentManager","",tolua_collect_AgentManager);
+    #else
+    tolua_cclass(tolua_S,"AgentManager","AgentManager","",NULL);
+    #endif
+    tolua_beginmodule(tolua_S,"AgentManager");
+    tolua_function(tolua_S,"delete",tolua_anysdk_AgentManager_delete00);
+    tolua_function(tolua_S,"getInstance",tolua_anysdk_AgentManager_getInstance00);
+    tolua_function(tolua_S,"endManager",tolua_anysdk_AgentManager_endManager00);
+    tolua_function(tolua_S,"init",tolua_anysdk_AgentManager_init00);
+    tolua_function(tolua_S,"loadALLPlugin",tolua_anysdk_AgentManager_loadALLPlugin00);
+    tolua_function(tolua_S,"unloadALLPlugin",tolua_anysdk_AgentManager_unloadALLPlugin00);
     tolua_function(tolua_S,"loadAllPlugins",tolua_anysdk_AgentManager_loadAllPlugins00);
     tolua_function(tolua_S,"unloadAllPlugins",tolua_anysdk_AgentManager_unloadAllPlugins00);
-   tolua_function(tolua_S,"getAnalyticsPlugin",tolua_anysdk_AgentManager_getAnalyticsPlugin00);
-   tolua_function(tolua_S,"getUserPlugin",tolua_anysdk_AgentManager_getUserPlugin00);
-   tolua_function(tolua_S,"getSharePlugin",tolua_anysdk_AgentManager_getSharePlugin00);
-   tolua_function(tolua_S,"getSocialPlugin",tolua_anysdk_AgentManager_getSocialPlugin00);
-   tolua_function(tolua_S,"getAdsPlugin",tolua_anysdk_AgentManager_getAdsPlugin00);
-   tolua_function(tolua_S,"getChannelId",tolua_anysdk_AgentManager_getChannelId00);
-   tolua_function(tolua_S,"getPushPlugin",tolua_anysdk_AgentManager_getPushPlugin00);
+    tolua_function(tolua_S,"getAnalyticsPlugin",tolua_anysdk_AgentManager_getAnalyticsPlugin00);
+    tolua_function(tolua_S,"getUserPlugin",tolua_anysdk_AgentManager_getUserPlugin00);
+    tolua_function(tolua_S,"getSharePlugin",tolua_anysdk_AgentManager_getSharePlugin00);
+    tolua_function(tolua_S,"getSocialPlugin",tolua_anysdk_AgentManager_getSocialPlugin00);
+    tolua_function(tolua_S,"getAdsPlugin",tolua_anysdk_AgentManager_getAdsPlugin00);
+    tolua_function(tolua_S,"getChannelId",tolua_anysdk_AgentManager_getChannelId00);
     tolua_function(tolua_S,"getRECPlugin",tolua_anysdk_AgentManager_getRECPlugin00);
     tolua_function(tolua_S,"getCustomPlugin",tolua_anysdk_AgentManager_getCustomPlugin00);
     tolua_function(tolua_S,"getCrashPlugin",tolua_anysdk_AgentManager_getCrashPlugin00);
-   tolua_function(tolua_S,"getCustomParam",tolua_anysdk_AgentManager_getCustomParam00);
-   tolua_function(tolua_S,"setIsAnaylticsEnabled",tolua_anysdk_AgentManager_setIsAnaylticsEnabled00);
-   tolua_function(tolua_S,"isAnaylticsEnabled",tolua_anysdk_AgentManager_isAnaylticsEnabled00);
-  tolua_endmodule(tolua_S);
-  #ifdef __cplusplus
-  tolua_cclass(tolua_S,"PluginFactory","PluginFactory","",tolua_collect_PluginFactory);
-  #else
-  tolua_cclass(tolua_S,"PluginFactory","PluginFactory","",NULL);
-  #endif
-  tolua_beginmodule(tolua_S,"PluginFactory");
-   tolua_function(tolua_S,"delete",tolua_anysdk_PluginFactory_delete00);
-   tolua_function(tolua_S,"getInstance",tolua_anysdk_PluginFactory_getInstance00);
-   tolua_function(tolua_S,"purgeFactory",tolua_anysdk_PluginFactory_purgeFactory00);
-  tolua_endmodule(tolua_S);
-  #ifdef __cplusplus
-  tolua_cclass(tolua_S,"PluginManager","PluginManager","",tolua_collect_PluginManager);
-  #else
-  tolua_cclass(tolua_S,"PluginManager","PluginManager","",NULL);
-  #endif
-  tolua_beginmodule(tolua_S,"PluginManager");
-   tolua_function(tolua_S,"delete",tolua_anysdk_PluginManager_delete00);
-   tolua_function(tolua_S,"getInstance",tolua_anysdk_PluginManager_getInstance00);
-   tolua_function(tolua_S,"endManager",tolua_anysdk_PluginManager_endManager00);
-   tolua_function(tolua_S,"loadPlugin",tolua_anysdk_PluginManager_loadPlugin00);
-   tolua_function(tolua_S,"unloadPlugin",tolua_anysdk_PluginManager_unloadPlugin00);
-  tolua_endmodule(tolua_S);
-  tolua_cclass(tolua_S,"PluginProtocol","PluginProtocol","",NULL);
-  tolua_beginmodule(tolua_S,"PluginProtocol");
-   tolua_function(tolua_S,"isFunctionSupported",tolua_anysdk_PluginProtocol_isFunctionSupported00);
-   tolua_function(tolua_S,"setPluginName",tolua_anysdk_PluginProtocol_setPluginName00);
-   tolua_function(tolua_S,"getPluginName",tolua_anysdk_PluginProtocol_getPluginName00);
-   tolua_function(tolua_S,"getPluginVersion",tolua_anysdk_PluginProtocol_getPluginVersion00);
-   tolua_function(tolua_S,"getSDKVersion",tolua_anysdk_PluginProtocol_getSDKVersion00);
-   tolua_function(tolua_S,"setDebugMode",tolua_anysdk_PluginProtocol_setDebugMode00);
-  tolua_endmodule(tolua_S);
-  tolua_cclass(tolua_S,"ProtocolAds","ProtocolAds","PluginProtocol",NULL);
-  tolua_beginmodule(tolua_S,"ProtocolAds");
-   tolua_function(tolua_S,"showAds",tolua_anysdk_ProtocolAds_showAds00);
-   tolua_function(tolua_S,"hideAds",tolua_anysdk_ProtocolAds_hideAds00);
-   tolua_function(tolua_S,"preloadAds",tolua_anysdk_ProtocolAds_preloadAds00);
-   tolua_function(tolua_S,"queryPoints",tolua_anysdk_ProtocolAds_queryPoints00);
-   tolua_function(tolua_S,"spendPoints",tolua_anysdk_ProtocolAds_spendPoints00);
-   tolua_function(tolua_S,"isAdTypeSupported",tolua_anysdk_ProtocolAds_isAdTypeSupported00);
-  tolua_endmodule(tolua_S);
-  tolua_cclass(tolua_S,"ProtocolAnalytics","ProtocolAnalytics","PluginProtocol",NULL);
-  tolua_beginmodule(tolua_S,"ProtocolAnalytics");
-   tolua_function(tolua_S,"startSession",tolua_anysdk_ProtocolAnalytics_startSession00);
-   tolua_function(tolua_S,"stopSession",tolua_anysdk_ProtocolAnalytics_stopSession00);
+    tolua_function(tolua_S,"getPushPlugin",tolua_anysdk_AgentManager_getPushPlugin00);
+    tolua_function(tolua_S,"getCustomParam",tolua_anysdk_AgentManager_getCustomParam00);
+    tolua_function(tolua_S,"setIsAnaylticsEnabled",tolua_anysdk_AgentManager_setIsAnaylticsEnabled00);
+    tolua_function(tolua_S,"isAnaylticsEnabled",tolua_anysdk_AgentManager_isAnaylticsEnabled00);
+    tolua_endmodule(tolua_S);
+    #ifdef __cplusplus
+    tolua_cclass(tolua_S,"PluginFactory","PluginFactory","",tolua_collect_PluginFactory);
+    #else
+    tolua_cclass(tolua_S,"PluginFactory","PluginFactory","",NULL);
+    #endif
+    tolua_beginmodule(tolua_S,"PluginFactory");
+    tolua_function(tolua_S,"delete",tolua_anysdk_PluginFactory_delete00);
+    tolua_function(tolua_S,"getInstance",tolua_anysdk_PluginFactory_getInstance00);
+    tolua_function(tolua_S,"purgeFactory",tolua_anysdk_PluginFactory_purgeFactory00);
+    tolua_endmodule(tolua_S);
+    #ifdef __cplusplus
+    tolua_cclass(tolua_S,"PluginManager","PluginManager","",tolua_collect_PluginManager);
+    #else
+    tolua_cclass(tolua_S,"PluginManager","PluginManager","",NULL);
+    #endif
+    tolua_beginmodule(tolua_S,"PluginManager");
+    tolua_function(tolua_S,"delete",tolua_anysdk_PluginManager_delete00);
+    tolua_function(tolua_S,"getInstance",tolua_anysdk_PluginManager_getInstance00);
+    tolua_function(tolua_S,"endManager",tolua_anysdk_PluginManager_endManager00);
+    tolua_function(tolua_S,"loadPlugin",tolua_anysdk_PluginManager_loadPlugin00);
+    tolua_function(tolua_S,"unloadPlugin",tolua_anysdk_PluginManager_unloadPlugin00);
+    tolua_endmodule(tolua_S);
+    tolua_cclass(tolua_S,"PluginProtocol","PluginProtocol","",NULL);
+    tolua_beginmodule(tolua_S,"PluginProtocol");
+    tolua_function(tolua_S,"setPluginName",tolua_anysdk_PluginProtocol_setPluginName00);
+    tolua_function(tolua_S,"getPluginName",tolua_anysdk_PluginProtocol_getPluginName00);
+    tolua_function(tolua_S,"getPluginVersion",tolua_anysdk_PluginProtocol_getPluginVersion00);
+    tolua_function(tolua_S,"getSDKVersion",tolua_anysdk_PluginProtocol_getSDKVersion00);
+    tolua_function(tolua_S,"setDebugMode",tolua_anysdk_PluginProtocol_setDebugMode00);
+    tolua_function(tolua_S,"isFunctionSupported",tolua_anysdk_PluginProtocol_isFunctionSupported00);
+    tolua_endmodule(tolua_S);
+    tolua_cclass(tolua_S,"ProtocolAds","ProtocolAds","PluginProtocol",NULL);
+    tolua_beginmodule(tolua_S,"ProtocolAds");
+    tolua_function(tolua_S,"showAds",tolua_anysdk_ProtocolAds_showAds00);
+    tolua_function(tolua_S,"hideAds",tolua_anysdk_ProtocolAds_hideAds00);
+    tolua_function(tolua_S,"preloadAds",tolua_anysdk_ProtocolAds_preloadAds00);
+    tolua_function(tolua_S,"queryPoints",tolua_anysdk_ProtocolAds_queryPoints00);
+    tolua_function(tolua_S,"spendPoints",tolua_anysdk_ProtocolAds_spendPoints00);
+    tolua_function(tolua_S,"isAdTypeSupported",tolua_anysdk_ProtocolAds_isAdTypeSupported00);
+    tolua_endmodule(tolua_S);
+    tolua_cclass(tolua_S,"ProtocolAnalytics","ProtocolAnalytics","PluginProtocol",NULL);
+    tolua_beginmodule(tolua_S,"ProtocolAnalytics");
+    tolua_function(tolua_S,"startSession",tolua_anysdk_ProtocolAnalytics_startSession00);
+    tolua_function(tolua_S,"stopSession",tolua_anysdk_ProtocolAnalytics_stopSession00);
+    tolua_function(tolua_S,"setSessionContinueMillis",tolua_anysdk_ProtocolAnalytics_setSessionContinueMillis00);
+    tolua_function(tolua_S,"logError",tolua_anysdk_ProtocolAnalytics_logError00);
+    tolua_function(tolua_S,"logTimedEventBegin",tolua_anysdk_ProtocolAnalytics_logTimedEventBegin00);
+    tolua_function(tolua_S,"logTimedEventEnd",tolua_anysdk_ProtocolAnalytics_logTimedEventEnd00);
+    tolua_function(tolua_S,"setCaptureUncaughtException",tolua_anysdk_ProtocolAnalytics_setCaptureUncaughtException00);
+    tolua_endmodule(tolua_S);
+    tolua_cclass(tolua_S,"ProtocolIAP","ProtocolIAP","PluginProtocol",NULL);
+    tolua_beginmodule(tolua_S,"ProtocolIAP");
+    tolua_function(tolua_S,"getOrderId",tolua_anysdk_ProtocolIAP_getOrderId00);
+    tolua_function(tolua_S,"getPluginId",tolua_anysdk_ProtocolIAP_getPluginId00);
+    tolua_function(tolua_S,"resetPayState",tolua_anysdk_ProtocolIAP_resetPayState00);
+    tolua_endmodule(tolua_S);
+    tolua_cclass(tolua_S,"PluginParam","PluginParam","",NULL);
+    tolua_beginmodule(tolua_S,"PluginParam");
+    tolua_function(tolua_S,"getCurrentType",tolua_anysdk_PluginParam_getCurrentType00);
+    tolua_function(tolua_S,"getIntValue",tolua_anysdk_PluginParam_getIntValue00);
+    tolua_function(tolua_S,"getFloatValue",tolua_anysdk_PluginParam_getFloatValue00);
+    tolua_function(tolua_S,"getBoolValue",tolua_anysdk_PluginParam_getBoolValue00);
+    tolua_function(tolua_S,"getStringValue",tolua_anysdk_PluginParam_getStringValue00);
+    tolua_endmodule(tolua_S);
+    tolua_cclass(tolua_S,"ProtocolPush","ProtocolPush","PluginProtocol",NULL);
+    tolua_beginmodule(tolua_S,"ProtocolPush");
+    tolua_function(tolua_S,"startPush",tolua_anysdk_ProtocolPush_startPush00);
+    tolua_function(tolua_S,"closePush",tolua_anysdk_ProtocolPush_closePush00);
+    tolua_function(tolua_S,"setAlias",tolua_anysdk_ProtocolPush_setAlias00);
+    tolua_function(tolua_S,"delAlias",tolua_anysdk_ProtocolPush_delAlias00);
+    tolua_endmodule(tolua_S);
+    tolua_cclass(tolua_S,"ProtocolSocial","ProtocolSocial","PluginProtocol",NULL);
+    tolua_beginmodule(tolua_S,"ProtocolSocial");
+    tolua_function(tolua_S,"signIn",tolua_anysdk_ProtocolSocial_signIn00);
+    tolua_function(tolua_S,"signOut",tolua_anysdk_ProtocolSocial_signOut00);
+    tolua_function(tolua_S,"submitScore",tolua_anysdk_ProtocolSocial_submitScore00);
+    tolua_function(tolua_S,"showLeaderboard",tolua_anysdk_ProtocolSocial_showLeaderboard00);
+    tolua_function(tolua_S,"showAchievements",tolua_anysdk_ProtocolSocial_showAchievements00);
+    tolua_endmodule(tolua_S);
+    tolua_cclass(tolua_S,"ProtocolUser","ProtocolUser","PluginProtocol",NULL);
+    tolua_beginmodule(tolua_S,"ProtocolUser");
+    tolua_function(tolua_S,"login",tolua_anysdk_ProtocolUser_login00);
+    tolua_function(tolua_S,"login",tolua_anysdk_ProtocolUser_login01);
+    tolua_function(tolua_S,"isLogined",tolua_anysdk_ProtocolUser_isLogined00);
+    tolua_function(tolua_S,"getUserID",tolua_anysdk_ProtocolUser_getUserID00);
 
-   tolua_function(tolua_S,"setSessionContinueMillis",tolua_anysdk_ProtocolAnalytics_setSessionContinueMillis00);
-   tolua_function(tolua_S,"logError",tolua_anysdk_ProtocolAnalytics_logError00);
-   tolua_function(tolua_S,"logTimedEventBegin",tolua_anysdk_ProtocolAnalytics_logTimedEventBegin00);
-   tolua_function(tolua_S,"logTimedEventEnd",tolua_anysdk_ProtocolAnalytics_logTimedEventEnd00);
-   tolua_function(tolua_S,"setCaptureUncaughtException",tolua_anysdk_ProtocolAnalytics_setCaptureUncaughtException00);
-  tolua_endmodule(tolua_S);
-  tolua_cclass(tolua_S,"ProtocolIAP","ProtocolIAP","PluginProtocol",NULL);
-  tolua_beginmodule(tolua_S,"ProtocolIAP");
-   tolua_function(tolua_S,"getOrderId",tolua_anysdk_ProtocolIAP_getOrderId00);
-   tolua_function(tolua_S,"getPluginId",tolua_anysdk_ProtocolIAP_getPluginId00);
-   tolua_function(tolua_S,"resetPayState",tolua_anysdk_ProtocolIAP_resetPayState00);
-  tolua_endmodule(tolua_S);
-  tolua_cclass(tolua_S,"PluginParam","PluginParam","",NULL);
-  tolua_beginmodule(tolua_S,"PluginParam");
-   tolua_function(tolua_S,"getCurrentType",tolua_anysdk_PluginParam_getCurrentType00);
-   tolua_function(tolua_S,"getIntValue",tolua_anysdk_PluginParam_getIntValue00);
-   tolua_function(tolua_S,"getFloatValue",tolua_anysdk_PluginParam_getFloatValue00);
-   tolua_function(tolua_S,"getBoolValue",tolua_anysdk_PluginParam_getBoolValue00);
-   tolua_function(tolua_S,"getStringValue",tolua_anysdk_PluginParam_getStringValue00);
-  tolua_endmodule(tolua_S);
-  tolua_cclass(tolua_S,"ProtocolPush","ProtocolPush","PluginProtocol",NULL);
-  tolua_beginmodule(tolua_S,"ProtocolPush");
-   tolua_function(tolua_S,"startPush",tolua_anysdk_ProtocolPush_startPush00);
-   tolua_function(tolua_S,"closePush",tolua_anysdk_ProtocolPush_closePush00);
-   tolua_function(tolua_S,"setAlias",tolua_anysdk_ProtocolPush_setAlias00);
-   tolua_function(tolua_S,"delAlias",tolua_anysdk_ProtocolPush_delAlias00);
-  tolua_endmodule(tolua_S);
-  tolua_cclass(tolua_S,"ProtocolSocial","ProtocolSocial","PluginProtocol",NULL);
-  tolua_beginmodule(tolua_S,"ProtocolSocial");
-   tolua_function(tolua_S,"signIn",tolua_anysdk_ProtocolSocial_signIn00);
-   tolua_function(tolua_S,"signOut",tolua_anysdk_ProtocolSocial_signOut00);
-   tolua_function(tolua_S,"submitScore",tolua_anysdk_ProtocolSocial_submitScore00);
-   tolua_function(tolua_S,"showLeaderboard",tolua_anysdk_ProtocolSocial_showLeaderboard00);
-   tolua_function(tolua_S,"showAchievements",tolua_anysdk_ProtocolSocial_showAchievements00);
-  tolua_endmodule(tolua_S);
-  tolua_cclass(tolua_S,"ProtocolUser","ProtocolUser","PluginProtocol",NULL);
-  tolua_beginmodule(tolua_S,"ProtocolUser");
-   tolua_function(tolua_S,"login",tolua_anysdk_ProtocolUser_login00);
-   tolua_function(tolua_S,"login",tolua_anysdk_ProtocolUser_login01);
-   tolua_function(tolua_S,"isLogined",tolua_anysdk_ProtocolUser_isLogined00);
-   tolua_function(tolua_S,"getUserID",tolua_anysdk_ProtocolUser_getUserID00);
-   tolua_function(tolua_S,"getPluginId",tolua_anysdk_ProtocolUser_getPluginId00);
-  tolua_endmodule(tolua_S);
-  tolua_cclass(tolua_S,"ProtocolShare","ProtocolShare","PluginProtocol",NULL);
-  tolua_beginmodule(tolua_S,"ProtocolShare");
-  tolua_endmodule(tolua_S);
+    tolua_function(tolua_S,"getPluginId",tolua_anysdk_ProtocolUser_getPluginId00);
+    tolua_endmodule(tolua_S);
+    tolua_cclass(tolua_S,"ProtocolShare","ProtocolShare","PluginProtocol",NULL);
+    tolua_beginmodule(tolua_S,"ProtocolShare");
+    tolua_endmodule(tolua_S);
     tolua_cclass(tolua_S,"ProtocolREC","ProtocolREC","PluginProtocol",NULL);
     tolua_beginmodule(tolua_S,"ProtocolREC");
     tolua_function(tolua_S,"startRecording",tolua_anysdk_ProtocolREC_startRecording00);

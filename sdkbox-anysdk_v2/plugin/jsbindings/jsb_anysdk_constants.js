@@ -73,7 +73,7 @@ anysdk.PayResultCode = {
 	kPayNowPaying:7, 	/**< enum value is callback of paying now . */
 	kPayRechargeSuccess:8,/**< enum value is callback of  succeeding in recharging. */
 	kPayExtension : 30000, /**< enum value is  extension code . */
-    kPayNeedLoginAgain : 31001 /**< enum value is  callback of  logining again . */
+    kPayNeedLoginAgain : 31002 /**< enum value is  callback of  logining again . */
 };
 
 anysdk.RequestResultCode = {
@@ -267,7 +267,7 @@ var PayResultCode = {
     kPayNowPaying:7,    /**< enum value is callback of paying now . */
     kPayRechargeSuccess:8,/**< enum value is callback of  succeeding in recharging. */
     kPayExtension : 30000, /**< enum value is  extension code . */
-    kPayNeedLoginAgain : 31001 /**< enum value is  callback of  logining again . */
+    kPayNeedLoginAgain : 31002 /**< enum value is  callback of  logining again . */
 };
 
 var RequestResultCode = {
