@@ -91,22 +91,31 @@ if COCOS_PROJECT_TYPE == 'cpp':
 if COCOS_PROJECT_TYPE == 'js':
     suffix = 'Js' + suffix
     if sdkbox.satisfies_cocos_version('3.0','3.4'):
-        sdkbox.copy_files(['jsbindings/3.x/autoanysdkbindings.cpp', 'jsbindings/3.x/autoanysdkbindings.hpp', 'jsbindings/3.x/manualanysdkbindings.cpp', 'jsbindings/3.x/manualanysdkbindings.hpp'], PLUGIN_PATH, COCOS_CLASSES_DIR)
+        sdkbox.copy_files(['jsbindings/3.0-3.4/autoanysdkbindings.cpp', 'jsbindings/3.0-3.4/autoanysdkbindings.hpp', 'jsbindings/3.0-3.4/manualanysdkbindings.cpp', 'jsbindings/3.0-3.4/manualanysdkbindings.hpp'], PLUGIN_PATH, COCOS_CLASSES_DIR)
         android_js_sources = ['../../Classes/manualanysdkbindings.cpp', '../../Classes/autoanysdkbindings.cpp']
         ios_js_sources = ['manualanysdkbindings.cpp', 'Classes/autoanysdkbindings.cpp']
         sdkbox.android_add_sources(android_js_sources)
-        sdkbox.xcode_add_sources(ios_js_sources)
+        if IOS_PROJECT_DIR != 'n/a':
+            sdkbox.xcode_add_sources(ios_js_sources)
 
     if sdkbox.satisfies_cocos_version('3.5', '3.9'):
-        sdkbox.copy_files(['jsbindings/3.5/jsb_anysdk_basic_conversions.cpp', 'jsbindings/3.5/jsb_anysdk_basic_conversions.h', 'jsbindings/3.5/manualanysdkbindings.cpp', 'jsbindings/3.5/manualanysdkbindings.hpp', 'jsbindings/3.5/jsb_anysdk_protocols_auto.cpp', 'jsbindings/3.5/jsb_anysdk_protocols_auto.hpp'], PLUGIN_PATH, COCOS_CLASSES_DIR)
+        sdkbox.copy_files(['jsbindings/3.5-3.9/jsb_anysdk_basic_conversions.cpp', 'jsbindings/3.5-3.9/jsb_anysdk_basic_conversions.h', 'jsbindings/3.5-3.9/manualanysdkbindings.cpp', 'jsbindings/3.5-3.9/manualanysdkbindings.hpp', 'jsbindings/3.5-3.9/jsb_anysdk_protocols_auto.cpp', 'jsbindings/3.5-3.9/jsb_anysdk_protocols_auto.hpp'], PLUGIN_PATH, COCOS_CLASSES_DIR)
         android_js_sources = ['../../Classes/jsb_anysdk_basic_conversions.cpp', '../../Classes/manualanysdkbindings.cpp', '../../Classes/jsb_anysdk_protocols_auto.cpp']
         ios_js_sources = ['jsb_anysdk_basic_conversions.cpp', 'manualanysdkbindings.cpp', 'jsb_anysdk_protocols_auto.cpp']
         if IOS_PROJECT_DIR != 'n/a':
             sdkbox.xcode_add_sources(ios_js_sources)
         sdkbox.android_add_sources(android_js_sources)
 
-    if sdkbox.satisfies_cocos_version('3.10'):
+    if sdkbox.satisfies_cocos_version('3.10','3.10'):
         sdkbox.copy_files(['jsbindings/3.10/jsb_anysdk_basic_conversions.cpp', 'jsbindings/3.10/jsb_anysdk_basic_conversions.h', 'jsbindings/3.10/manualanysdkbindings.cpp', 'jsbindings/3.10/manualanysdkbindings.hpp', 'jsbindings/3.10/jsb_anysdk_protocols_auto.cpp', 'jsbindings/3.10/jsb_anysdk_protocols_auto.hpp'], PLUGIN_PATH, COCOS_CLASSES_DIR)
+        android_js_sources = ['../../Classes/jsb_anysdk_basic_conversions.cpp', '../../Classes/manualanysdkbindings.cpp', '../../Classes/jsb_anysdk_protocols_auto.cpp']
+        ios_js_sources = ['jsb_anysdk_basic_conversions.cpp', 'manualanysdkbindings.cpp', 'jsb_anysdk_protocols_auto.cpp']
+        if IOS_PROJECT_DIR != 'n/a':
+            sdkbox.xcode_add_sources(ios_js_sources)
+        sdkbox.android_add_sources(android_js_sources)
+
+    if sdkbox.satisfies_cocos_version('3.11','3.11'):
+        sdkbox.copy_files(['jsbindings/3.11/jsb_anysdk_basic_conversions.cpp', 'jsbindings/3.11/jsb_anysdk_basic_conversions.h', 'jsbindings/3.11/manualanysdkbindings.cpp', 'jsbindings/3.11/manualanysdkbindings.hpp', 'jsbindings/3.11/jsb_anysdk_protocols_auto.cpp', 'jsbindings/3.11/jsb_anysdk_protocols_auto.hpp'], PLUGIN_PATH, COCOS_CLASSES_DIR)
         android_js_sources = ['../../Classes/jsb_anysdk_basic_conversions.cpp', '../../Classes/manualanysdkbindings.cpp', '../../Classes/jsb_anysdk_protocols_auto.cpp']
         ios_js_sources = ['jsb_anysdk_basic_conversions.cpp', 'manualanysdkbindings.cpp', 'jsb_anysdk_protocols_auto.cpp']
         if IOS_PROJECT_DIR != 'n/a':
@@ -130,11 +139,13 @@ if COCOS_PROJECT_TYPE == 'js':
         sdkbox.apply_patch(COCOS_CLASSES_DIR + 'AppDelegate.cpp', 'AppDelegate.js3.6.patch', root=COCOS_CLASSES_DIR)
     elif sdkbox.satisfies_cocos_version('3.7','3.7'):
         sdkbox.apply_patch(COCOS_CLASSES_DIR + 'AppDelegate.cpp', 'AppDelegate.js3.7.patch', root=COCOS_CLASSES_DIR)
-    elif sdkbox.satisfies_cocos_version('3.8'):
+    elif sdkbox.satisfies_cocos_version('3.8','3.10'):
         if COCOS_ENGINE_TYPE == 'prebuilt':
             sdkbox.apply_patch(COCOS_CLASSES_DIR + 'AppDelegate.cpp', 'AppDelegate.js3.9prebuilt.patch', root=COCOS_CLASSES_DIR)
         else:
             sdkbox.apply_patch(COCOS_CLASSES_DIR + 'AppDelegate.cpp', 'AppDelegate.js3.8.patch', root=COCOS_CLASSES_DIR)
+    elif sdkbox.satisfies_cocos_version('3.11'):
+        sdkbox.apply_patch(COCOS_CLASSES_DIR + 'AppDelegate.cpp', 'AppDelegate.js3.11.patch', root=COCOS_CLASSES_DIR)
 
 
     if COCOS_ENGINE_TYPE == 'prebuilt':

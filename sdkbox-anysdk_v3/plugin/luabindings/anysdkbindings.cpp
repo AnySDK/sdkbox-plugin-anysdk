@@ -28,7 +28,7 @@
  ****************************************************************************/
 
 extern "C" {
-#include "tolua_fix.h"
+#include "scripting/lua-bindings/manual/tolua_fix.h"
 }
 
 #include <map>

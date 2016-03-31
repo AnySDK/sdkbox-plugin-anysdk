@@ -27,7 +27,7 @@
  THE SOFTWARE.
  ****************************************************************************/
 // extern "C" {
-#include "tolua_fix.h"
+#include "scripting/lua-bindings/manual/tolua_fix.h"
 // }
 
 #include <map>
@@ -51,7 +51,7 @@
 #include "ProtocolREC.h"
 #include "ProtocolCustom.h"
 
-#include "CCLuaEngine.h"
+#include "scripting/lua-bindings/manual/CCLuaEngine.h"
 
 #include "anysdk_manual_bindings.h"
 #include "cocos2d.h"
@@ -60,7 +60,7 @@
 // #define ON_VERSION_2 1
 
 #ifndef ON_VERSION_2
-    #include "LuaBasicConversions.h"
+    #include "scripting/lua-bindings/manual/LuaBasicConversions.h"
 #endif
 
 
